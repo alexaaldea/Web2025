@@ -12,7 +12,7 @@
     <div class="background-img"></div>
     <br>
     <div class="logo">
-        <img src="../media/logo-inpot.svg" width="200" height="300">
+        <img src="../media/logo-inpot.svg" alt = "logo for inpot" width="200" height="150">
     </div>
     <div class ="container">
     <div class="login-bar">
@@ -53,7 +53,7 @@
     const signupFields = document.getElementById('signup-fields');
     const formTitle = document.getElementById('form-title');
     const loginButton = document.getElementById('login');
-    const authForm = document.getElementById('form-label');
+    const formLabel = document.getElementById('form-label');
 
     let isSignup = false;
 
@@ -66,7 +66,7 @@
         loginButton.value = isSignup ? 'Register' : 'Login';
         formLabel.textContent = isSignup ? 'Fill in all fields to create an account' : 'Enter your email and password';
 
-        toggleLink.textContent = isSignup ? "Already have an account? <br> Login now!" : "Don't have an account? <br> Register now!";
+        toggleLink.innerHTML = isSignup ? 'Already have an account? <br><strong> Login now!</strong>' : "Don't have an account? <br><strong> Register now! </strong>";
     }
     )
 </script>
