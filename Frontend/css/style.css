@@ -4,7 +4,6 @@ body{
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: medium;
     background-color: rebeccapurple;
-    overflow: hidden;
 }
 
 .logo
@@ -14,7 +13,7 @@ body{
     border-radius: 10%;
     border:0rem;
     background-image: linear-gradient(rgb(178, 130, 200),aliceblue);
-    
+
 }
 
 .login-bar{
@@ -58,11 +57,13 @@ body{
 }
 
 .formular #email,
-.formular #pwd {
+.formular #pwd,
+.formular #last-name,
+.formular #first-name {
     background-color:white;
     height: 2.5rem;
     padding: 0 0 0 1rem; 
-    margin: 0.2rem; /* <-- center horizontally */
+    margin: 0.2rem; 
     width: 90%;
     border-radius: 1rem;
     border: 3px solid;
@@ -70,7 +71,9 @@ body{
 }
 
 .formular #email::placeholder,
-.formular #pwd::placeholder {
+.formular #pwd::placeholder,
+.formular #last-name::placeholder,
+.formular #first-name::placeholder {
     color: rgb(125, 109, 142); 
     opacity: 1;
     font-weight: bold;
@@ -95,7 +98,7 @@ body{
     background-image: url(../media/binary.jpg);
     background-size: cover;
     background-position: center;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -115,7 +118,8 @@ body{
     box-shadow: 0px 8px 60px rgba(0, 0, 0, 0.6);
     max-width: 450px;
     width: 90%;
-    height: 75%;
+    min-height: 80%;
+    height: auto;
     z-index: 1;
     position: relative;
 }
