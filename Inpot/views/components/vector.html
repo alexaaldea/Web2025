@@ -1,0 +1,36 @@
+    <h3>Vector Generator</h3>
+    <br>
+
+    <label for="vector-length">Length of vector:</label>
+    <input type="number" id="vector-length" placeholder="Enter length"><br><br>
+
+    <label for="vector-min">Minimum value:</label>
+    <input type="number" id="vector-min" placeholder="Enter min value"><br><br>
+
+    <label for="vector-max">Maximum value:</label>
+    <input type="number" id="vector-max" placeholder="Enter max value"><br><br>
+
+    <label for="vector-parity">Parity:</label>
+    <select id="vector-parity">
+        <option value="any">Any</option>
+        <option value="even">Even</option>
+        <option value="odd">Odd</option>
+    </select><br><br>
+
+    <label for="vector-sign">Sign:</label>
+    <select id="vector-sign">
+        <option value="any">Any</option>
+        <option value="+">+</option>
+        <option value="-">-</option>
+    </select><br><br>
+
+    <label for="vector-sorted">Sorted:</label>
+    <select id="vector-sorted">
+        <option value="no">No</option>
+        <option value="ascending">Ascending</option>
+        <option value="descending">Descending</option>
+    </select><br><br>
+
+    <button onclick="generateVector()">Generate</button>
+
+    <div id="vector-output" style="margin-top: 20px;"></div>

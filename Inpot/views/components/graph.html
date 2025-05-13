@@ -1,0 +1,47 @@
+  <h3>Graph Generator</h3><br>
+
+    <label for="graph-nodes">Number of nodes:</label>
+    <input type="number" id="graph-nodes" placeholder="node number"><br><br>
+
+    <label for="graph-edges">Number of edges:</label>
+    <input type="number" id="graph-edges" placeholder="edge number"><br><br>
+
+    <label for="graph-oriented">Directed:</label>
+    <select id="graph-oriented">
+        <option value="no">Undirected</option>
+        <option value="yes">Directed</option>
+    </select><br><br>
+
+    <label for="graph-connected">Connected:</label>
+    <select id="graph-connected">
+        <option value="no">No</option>
+        <option value="yes">Yes</option>
+    </select><br><br>
+
+    <label for="graph-bipartit">Bipartit:</label>
+    <select id="graph-bipartit">
+        <option value="no">No</option>
+        <option value="yes">Yes</option>
+    </select><br><br>
+
+    <label for="graph-weighted">Weighted:</label>
+    <select id="graph-weighted">
+        <option value="no">No</option>
+        <option value="yes">Yes</option>
+    </select><br><br>
+
+    <label for="graph-min-weight">Min weight:</label>
+    <input type="number" id="graph-min-weight" placeholder="-"><br><br>
+
+    <label for="graph-max-weight">Max weight:</label>
+    <input type="number" id="graph-max-weight" placeholder="-"><br><br>
+
+    <label for="graph-format">Display format:</label>
+    <select id="graph-format">
+        <option value="edge">Edge List</option>
+        <option value="adjacency">Adjacency Matrix</option>
+    </select><br><br>
+
+    <button onclick="generateGraph()">Generate</button>
+
+    <div id="graph-output" style="margin-top: 20px; white-space: pre-wrap;"></div>
