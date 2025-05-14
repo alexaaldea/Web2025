@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inpot</title>
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+
+<body>
+    <div class="background-img"></div>
+
+    <div class="wrapper">
+        <div class="sidebar">
+            <h2>Input Generator</h2>
+            <ul>
+                <li><a onclick="showContainer('number')"><i class="fas fa-number"></i>Number Generator</a></li>
+                <li><a onclick="showContainer('string')"><i class="fas fa-string"></i>String Generator</a></li>
+                <li><a onclick="showContainer('vector')"><i class="fas fa-vector"></i>Vector Generator</a></li>
+                <li><a onclick="showContainer('matrix')"><i class="fas fa-matrix"></i>Matrix Generator</a></li>
+                <li><a onclick="showContainer('graph')"><i class="fas fa-graph"></i>Graph Generator</a></li>
+            </ul>
+        </div>
+
+        <div class="content">
+            <div id="number" class="container">Number Generator Content</div>
+            <div id="string" class="container">String Generator Content</div>
+            <div id="vector" class="container">Vector Generator Content</div>
+            <div id="matrix" class="container">Matrix Generator Content</div>
+            <div id="graph" class="container">Graph Generator Content</div>
+        </div>
+    </div>
+</body>
+
+
+<script>
+    function showContainer(containerId) {
+        const containers = document.querySelectorAll('.container');
+        containers.forEach(el => el.style.display = 'none');
+
+        const selected = document.getElementById(containerId);
+        if (selected) {
+            selected.style.display = 'block';
+        }
+    }
+</script>
+</html>
