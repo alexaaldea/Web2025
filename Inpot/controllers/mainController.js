@@ -1,4 +1,5 @@
 import { matrixModel } from '../models/matrixModel.js';
+import { vectorModel } from '../models/vectorModel.js';
 import { numberModel } from '../models/numberModel.js';
 import { stringModel } from '../models/stringModel.js';
 
