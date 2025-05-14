@@ -19,20 +19,239 @@
                 <li><a onclick="showContainer('vector')"><i class="fas fa-vector"></i>Vector Generator</a></li>
                 <li><a onclick="showContainer('matrix')"><i class="fas fa-matrix"></i>Matrix Generator</a></li>
                 <li><a onclick="showContainer('graph')"><i class="fas fa-graph"></i>Graph Generator</a></li>
+                <li><a onclick="showContainer('tree')"><i class="fas fa-tree"></i>Tree Generator</a></li>
             </ul>
         </div>
 
         <div class="content">
-            <div id="number" class="container">Number Generator Content</div>
-            <div id="string" class="container">String Generator Content</div>
-            <div id="vector" class="container">Vector Generator Content</div>
-            <div id="matrix" class="container">Matrix Generator Content</div>
-            <div id="graph" class="container">Graph Generator Content</div>
+            <div id="number" class="container" style="display: none;">
+
+                <h3>Number Generator</h3>
+                <br>
+
+                <label for="number-min">Minimum:</label>
+                <input type="number" id="number-min" placeholder="Enter min value"><br><br>
+
+                <label for="number-max">Maximum:</label>
+                <input type="number" id="number-max" placeholder="Enter max value"><br><br>
+
+                <label for="number-count">How many numbers?</label>
+                <input type="number" id="number-count" placeholder="Enter count"><br><br>
+
+                <label for="number-parity">Parity:</label>
+                <select id="number-parity">
+                    <option value="any">Any</option>
+                    <option value="even">Even</option>
+                    <option value="odd">Odd</option>
+                </select><br><br>
+
+                <label for="number-sign">Sign:</label>
+                <select id="number-sign">
+                    <option value="any">Any</option>
+                    <option value="+">+</option>
+                    <option value="-">-</option>
+                </select><br><br>
+
+                <label for="number-sorted">Sorted:</label>
+                <select id="number-sorted">
+                    <option value="no">No</option>
+                    <option value="ascending">Ascending</option>
+                    <option value="descending">Descending</option>
+                </select><br><br>
+
+                <button onclick="generateNumbers()">Generate</button>
+
+                <div id="number-output" style="margin-top: 20px;"></div>
+            </div>
+
+            <div id="string" class="container" style="display: none;">
+
+                <h3>String Generator</h3>
+                <br>
+
+                <label for="string-min">Minimum lenght:</label>
+                <input type="number" id="string-min" placeholder="Enter min value"><br><br>
+
+                <label for="string-max">Maximum lenght:</label>
+                <input type="number" id="string-max" placeholder="Enter max value"><br><br>
+
+                <label for="string-unique">Unique:</label>
+                <select id="string-unique">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select><br><br>
+
+                <label for="string-letter">With which letters?</label>
+                <input type="number" id="string-letter" placeholder="Please use , in between"><br><br>
+
+                <label for="string-count">How many strings?</label>
+                <input type="number" id="string-count" placeholder="Enter count"><br><br>
+
+
+
+                <button onclick="generateStrings()">Generate</button>
+
+                <div id="string-output" style="margin-top: 20px;"></div>
+            </div>
+
+            <div id="vector" class="container" style="display: none;">
+                <h3>Vector Generator</h3>
+                <br>
+
+                <label for="vector-length">Length of vector:</label>
+                <input type="number" id="vector-length" placeholder="Enter length"><br><br>
+
+                <label for="vector-min">Minimum value:</label>
+                <input type="number" id="vector-min" placeholder="Enter min value"><br><br>
+
+                <label for="vector-max">Maximum value:</label>
+                <input type="number" id="vector-max" placeholder="Enter max value"><br><br>
+
+                <label for="vector-parity">Parity:</label>
+                <select id="vector-parity">
+                    <option value="any">Any</option>
+                    <option value="even">Even</option>
+                    <option value="odd">Odd</option>
+                </select><br><br>
+
+                <label for="vector-sign">Sign:</label>
+                <select id="vector-sign">
+                    <option value="any">Any</option>
+                    <option value="+">+</option>
+                    <option value="-">-</option>
+                </select><br><br>
+
+                <label for="vector-sorted">Sorted:</label>
+                <select id="vector-sorted">
+                    <option value="no">No</option>
+                    <option value="ascending">Ascending</option>
+                    <option value="descending">Descending</option>
+                </select><br><br>
+
+                <button onclick="generateVector()">Generate</button>
+
+                <div id="vector-output" style="margin-top: 20px;"></div>
+            </div>
+
+            <div id="matrix" class="container" style="display: none;">
+                <h3>Matrix Generator</h3>
+                <br>
+
+                <label for="matrix-rows">Number of rows:</label>
+                <input type="number" id="matrix-rows" placeholder="Enter row count"><br><br>
+
+                <label for="matrix-cols">Number of columns:</label>
+                <input type="number" id="matrix-cols" placeholder="Enter column count"><br><br>
+
+                <label for="matrix-min">Minimum value:</label>
+                <input type="number" id="matrix-min" placeholder="Enter min value"><br><br>
+
+                <label for="matrix-max">Maximum value:</label>
+                <input type="number" id="matrix-max" placeholder="Enter max value"><br><br>
+
+                <label for="matrix-parity">Parity:</label>
+                <select id="matrix-parity">
+                    <option value="any">Any</option>
+                    <option value="even">Even</option>
+                    <option value="odd">Odd</option>
+                </select><br><br>
+
+                <label for="matrix-map">Map:</label>
+                <select id="matrix-map">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select><br><br>
+
+                <label for="matrix-sign">Sign:</label>
+                <select id="matrix-sign">
+                    <option value="any">Any</option>
+                    <option value="+">+</option>
+                    <option value="-">-</option>
+                </select><br><br>
+
+                <button onclick="generateMatrix()">Generate</button>
+
+                <div id="matrix-output" style="margin-top: 20px; white-space: pre-wrap;"></div>
+            </div>
+
+            <div id="graph" class="container" style="display: none;">
+                <h3>Graph Generator</h3><br>
+
+                <label for="graph-nodes">Number of nodes:</label>
+                <input type="number" id="graph-nodes" placeholder="node number"><br><br>
+
+                <label for="graph-edges">Number of edges:</label>
+                <input type="number" id="graph-edges" placeholder="edge number"><br><br>
+
+                <label for="graph-oriented">Directed:</label>
+                <select id="graph-oriented">
+                    <option value="no">Undirected</option>
+                    <option value="yes">Directed</option>
+                </select><br><br>
+
+                <label for="graph-connected">Connected:</label>
+                <select id="graph-connected">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select><br><br>
+
+                <label for="graph-bipartit">Bipartit:</label>
+                <select id="graph-bipartit">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select><br><br>
+
+                <label for="graph-weighted">Weighted:</label>
+                <select id="graph-weighted">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select><br><br>
+
+                <label for="graph-min-weight">Min weight:</label>
+                <input type="number" id="graph-min-weight" placeholder="-"><br><br>
+
+                <label for="graph-max-weight">Max weight:</label>
+                <input type="number" id="graph-max-weight" placeholder="-"><br><br>
+
+                <label for="graph-format">Display format:</label>
+                <select id="graph-format">
+                    <option value="edge">Edge List</option>
+                    <option value="adjacency">Adjacency Matrix</option>
+                </select><br><br>
+
+                <button onclick="generateGraph()">Generate</button>
+
+                <div id="graph-output" style="margin-top: 20px; white-space: pre-wrap;"></div>
+            </div>
+
+
+            <div id="tree" class="container" style="display: none;">
+                <h3>Tree Generator</h3><br>
+
+                <label for="tree-nodes">Number of nodes:</label>
+                <input type="number" id="tree-nodes" placeholder="node number"><br><br>
+
+                <label for="tree-oriented">Directed:</label>
+                <select id="tree-oriented">
+                    <option value="no">Undirected</option>
+                    <option value="yes">Directed</option>
+                </select><br><br>
+
+                <label for="tree-format">Display format:</label>
+                <select id="tree-format">
+                    <option value="edge">Edge List</option>
+                    <option value="parent">Parent Vector</option>
+                </select><br><br>
+
+                <button onclick="generateTree()">Generate</button>
+
+                <div id="tree-output" style="margin-top: 20px; white-space: pre-wrap;"></div>
+            </div>
+
         </div>
     </div>
 </body>
-
-
+<!--nu uita sa scoti javascriptul!!!--> 
 <script>
     function showContainer(containerId) {
         const containers = document.querySelectorAll('.container');
