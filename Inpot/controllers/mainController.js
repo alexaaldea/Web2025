@@ -42,6 +42,22 @@ export const mainController = {
 
         document.getElementById('string-output').textContent = strings.join('\n');
     },
+    
+    generateVector(){
+
+        const elem =parseInt(document.getElementById('vector-length').value);
+        const min = parseInt(document.getElementById('vector-min').value);
+        const max = parseInt(document.getElementById('vector-max').value);
+        const parity = document.getElementById('vector-parity').value;
+        const sign = document.getElementById('vector-sign').value;
+        const sorted = document.getElementById('vector-sorted').value;
+
+        const vect=vectorModel.generateVector(elem,min,max,parity,sign,sorted);
+
+        document.getElementById('vector-output').textContent=vect.join('\n');
+
+    },
+
     generateMatrix(){
 
         const row =parseInt(document.getElementById('matrix-rows').value);
@@ -52,9 +68,9 @@ export const mainController = {
         const sign = document.getElementById('matrix-sign').value;
         const map = document.getElementById('matrix-map').value;
 
-        const matrix=matrixModel.generateMatrix(row,col,min,max,parity,sign,map);
+        const matrixs=matrixModel.generateMatrix(row,col,min,max,parity,sign,map);
 
-        document.getElementById('matrix-output').textContent=matrix.join('\n');
+        document.getElementById('matrix-output').textContent=matrixs.join('\n');
 
     },
 
