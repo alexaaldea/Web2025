@@ -1,3 +1,4 @@
+import { matrixModel } from '../models/matrixModel.js';
 import { numberModel } from '../models/numberModel.js';
 import { stringModel } from '../models/stringModel.js';
 
@@ -40,6 +41,21 @@ export const mainController = {
 
 
         document.getElementById('string-output').textContent = strings.join('\n');
+    },
+    generateMatrix(){
+
+        const row =parseInt(document.getElementById('matrix-rows').value);
+        const col =parseInt(document.getElementById('matrix-cols').value);
+        const min = parseInt(document.getElementById('matrix-min').value);
+        const max = parseInt(document.getElementById('matrix-max').value);
+        const parity = document.getElementById('matrix-parity').value;
+        const sign = document.getElementById('matrix-sign').value;
+        const map = document.getElementById('matrix-map').value;
+
+        const matrix=matrixModel.generateMatrix(row,col,min,max,parity,sign,map);
+
+        document.getElementById('matrix-output').textContent=matrix.join('\n');
+
     },
 
 
