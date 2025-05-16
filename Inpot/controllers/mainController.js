@@ -2,6 +2,8 @@ import { matrixModel } from '../models/matrixModel.js';
 import { vectorModel } from '../models/vectorModel.js';
 import { numberModel } from '../models/numberModel.js';
 import { stringModel } from '../models/stringModel.js';
+import { treeModel } from '../models/treeModel.js';
+import { graphModel } from '../models/graphModel.js';
 
 export const mainController = {
     showContainer(containerId) {
@@ -72,6 +74,36 @@ export const mainController = {
         const matrixs=matrixModel.generateMatrix(row,col,min,max,parity,sign,map);
 
         document.getElementById('matrix-output').textContent=matrixs.join('\n');
+
+    },
+    generateGraph(){
+
+        const node =parseInt(document.getElementById('graph-nodes').value);
+        const edge =parseInt(document.getElementById('graph-edges').value);
+        const oriented = document.getElementById('graph-oriented').value;
+        const connected = document.getElementById('graph-connected').value;
+        const bipartit = document.getElementById('graph-bipartit').value;
+        const weighted = document.getElementById('graph-weighted').value;
+        const min_weight =parseInt(document.getElementById('graph-min-weight').value);
+        const max_weight =parseInt(document.getElementById('graph-max-weight').value);
+        const format = document.getElementById('graph-format').value;
+
+
+        const graphs=graphModel.generateGraph(node,edge,oriented,connected,bipartit,weighted,min_weight,max_weight,format);
+
+        document.getElementById('graph-output').textContent=graphs.join('\n');
+
+    },
+
+    generateTree(){
+
+        const node =parseInt(document.getElementById('tree-nodes').value);
+        const oriented = document.getElementById('tree-oriented').value;
+        const output_format = document.getElementById('tree-format').value;
+
+        const trees=treeModel.generateTree(node,oriented,output_format);
+
+        document.getElementById('tree-output').textContent=trees.join('\n');
 
     },
 
