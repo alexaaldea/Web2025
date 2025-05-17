@@ -5,7 +5,7 @@ import { stringModel } from '../models/stringModel.js';
 import { treeModel } from '../models/treeModel.js';
 import { graphModel } from '../models/graphModel.js';
 
-export const mainController = {
+const mainController = {
     showContainer(containerId) {
         const containers = document.querySelectorAll('.container');
         containers.forEach(el => el.style.display = 'none');
@@ -91,7 +91,7 @@ export const mainController = {
 
         const graphs=graphModel.generateGraph(node,edge,oriented,connected,bipartit,weighted,min_weight,max_weight,format);
 
-        document.getElementById('graph-output').textContent=graphs.join('\n');
+        document.getElementById('graph-output').textContent=graphs.join(' ');
 
     },
 
@@ -103,7 +103,7 @@ export const mainController = {
 
         const trees=treeModel.generateTree(node,oriented,output_format);
 
-        document.getElementById('tree-output').textContent=trees.join('\n');
+        document.getElementById('tree-output').textContent=trees.join(' ');
 
     },
 
