@@ -51,9 +51,13 @@ export const mainController = {
         const unique = document.getElementById('string-unique').value;
         const letters = document.getElementById('string-letter').value.split(',');
         const count = parseInt(document.getElementById('string-count').value);
+        const sameLength = parseInt(document.getElementById('same-length').value);
+        const prefix = document.getElementById('include-prefix').value;
+        const suffix = document.getElementById('include-suffix').value;
+        const sorting = document.getElementById('sorting').value;
 
 
-        const strings = stringModel.generateStrings(minLength, maxLength, unique, letters, count);
+        const strings = stringModel.generateStrings(minLength, maxLength, unique, letters, count, sameLength, prefix, suffix, sorting);
 
 
         document.getElementById('string-output').textContent = strings.join('\n');
