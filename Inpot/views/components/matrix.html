@@ -1,0 +1,39 @@
+<h3>Matrix Generator</h3>
+<br>
+
+<label for="matrix-rows">Number of rows:</label>
+<input type="number" id="matrix-rows" placeholder="Enter row count"><br><br>
+
+<label for="matrix-cols">Number of columns:</label>
+<input type="number" id="matrix-cols" placeholder="Enter column count"><br><br>
+
+<label for="matrix-min">Minimum value:</label>
+<input type="number" id="matrix-min" placeholder="Enter min value"><br><br>
+
+<label for="matrix-max">Maximum value:</label>
+<input type="number" id="matrix-max" placeholder="Enter max value"><br><br>
+
+<label for="matrix-parity">Parity:</label>
+<select id="matrix-parity">
+    <option value="any">Any</option>
+    <option value="even">Even</option>
+    <option value="odd">Odd</option>
+</select><br><br>
+
+<label for="matrix-map">Map:</label>
+<select id="matrix-map">
+    <option value="no">No</option>
+    <option value="yes">Yes</option>
+</select><br><br>
+
+<label for="matrix-sign">Sign:</label>
+<select id="matrix-sign">
+    <option value="any">Any</option>
+    <option value="+">+</option>
+    <option value="-">-</option>
+</select><br><br>
+
+<button onclick="mainController.generateMatrix()">Generate</button>
+
+<div id="matrix-output" style="margin-top: 20px; white-space: pre-wrap;"></div>
+
