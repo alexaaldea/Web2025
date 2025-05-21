@@ -24,10 +24,37 @@ const loginController = {
         });
 
         
-        document.getElementById('auth-form').addEventListener('submit', function(e) {
+        document.getElementById('auth-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('pwd').value;
+            const firstName = document.getElementById('first-name').value;
+            const lastName = document.getElementById('last-name').value;
+            let actionUrl = '';
             if (!isSignup) {
-                document.getElementById('first-name').required = false;
-                document.getElementById('last-name').required = false;
+                actionUrl = '/Web2025/Inpot/config/login-jwt.php';
+            } else {
+                actionUrl = '/Web2025/Inpot/config/signup.php';
+            }
+            const formData = new FormData();
+            formData.append('email', email);
+            formData.append('pwd', password);
+            formData.append('first-name', firstName);
+            formData.append('last-name', lastName);
+
+            try {
+                const response = await fetch(actionUrl, {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.text();
+                if (response.ok) {
+                    window.location.href = '../views/main.html';
+                } else {
+                    alert(result);
+                }
+            } catch (error) {
+                alert('Error: ' + error);
             }
         });
     }
