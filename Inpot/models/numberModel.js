@@ -10,6 +10,11 @@ export const numberModel = {
             return ['Invalid input'];
         }
 
+        if (type === 'integer') {
+            min = Math.ceil(min);  
+            max = Math.floor(max); 
+        }
+
         if(pattern == 'arithmetic') {
             if (isNaN(step) || step <= 0) {
                 return ['Invalid step size'];
@@ -54,17 +59,13 @@ export const numberModel = {
             addIfUnique(formatNumber(max, type));
         }
 
-
-        if (includeZero && min <= 0 && max >= 0) {
-            numbers.push(formatNumber(0, type));
+        if(unique && count > numberOfOptions(min, max, parity, sign, type)) {
+            return ['Not able to generate unique numbers with current filters'];
         }
-        if (includeMin) {
-            numbers.push(formatNumber(min, type));
-        }
-        if (includeMax) {
-            numbers.push(formatNumber(max, type));
-        }
-        while(numbers.length < count) {
+        let attempts = 0;
+        const MAX_ATTEMPTS = 10000;
+        while(numbers.length < count && attempts < MAX_ATTEMPTS) {
+            attempts++;
             let num;
            if (type === 'float') {
                 num = Math.random() * (max - min) + min;
@@ -77,9 +78,11 @@ export const numberModel = {
             if (sign === 'positive' && num < 0) continue;
             if (sign === 'negative' && num > 0) continue;
 
-            if (!unique || !numbers.includes(num)) {
-                numbers.push(num);
-            }
+            addIfUnique(formatNumber(num, type));
+        }
+
+        if(attempts === MAX_ATTEMPTS) {
+            return ['Too many attempts. Filters may be too restrictive'];
         }
 
         if(numbers.length < count) {
@@ -92,11 +95,23 @@ export const numberModel = {
             numbers.sort((a, b) => b - a);
         }
 
-
-        return numbers;
+       return numbers.map(num => formatNumber(num, type));
     },
 };
 
 function formatNumber(num, type) {
     return type === 'float' ? parseFloat(num.toFixed(2)) : Math.round(num);
+}
+
+function numberOfOptions(min, max, parity, sign, type){
+    let options = 0;
+    for(let i = min; i<=max; i++){
+        if (type === 'float') continue;
+        if (parity ==='even' && i%2!==0) continue;
+        if (parity ==='odd' && i%2===0) continue;
+        if (sign ==='positive' && i<0) continue;
+        if (sign ==='negative' && i>0) continue;
+        options++;
+    }
+    return options;
 }
