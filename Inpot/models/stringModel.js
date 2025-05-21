@@ -6,6 +6,12 @@ export const stringModel = {
         if (!letters || letters.length === 0 || isNaN(minLength) || isNaN(maxLength) || isNaN(count)) {
             return ['Invalid input.'];
         }
+        if (sameLength && ((prefix?.length || 0) + (suffix?.length || 0) > sameLength)) {
+             return ['Prefix and/or suffix length exceeds the length.'];
+        }
+        if(!sameLength && ((prefix?.length || 0) + (suffix?.length || 0) > maxLength)){
+            return ['Prefix and/or suffix length exceeds the max length.'];
+        }
 
         const getRandomLength = () => 
             Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
@@ -49,6 +55,9 @@ export const stringModel = {
         if(minLength>maxLength){
             return ['Invalid input. Min length cannot be greater than max length.'];
         }
+        if(useUnique && count > calculatePossibilities(minLength, maxLength, useUnique, letters, sameLength, prefix, suffix, useUnique)){   
+        return ['Impossible to generate that many unique strings.'];
+    }
         while (results.size < count) {
             const str = generateRandomString();
             if (useUnique) {
@@ -68,3 +77,16 @@ export const stringModel = {
             return Array.from(results).slice(0, count);
     }
 };
+
+function calculatePossibilities(minLength, maxLength, unique, letters, sameLength, prefix, suffix, useUnique) {
+    let totalPossibilities = 0;
+    if(sameLength){
+        totalPossibilities = Math.pow(letters.length, sameLength - (prefix?.length || 0) - (suffix?.length || 0));
+    }
+    else{
+        for (let len = minLength; len <= maxLength; len++) {
+            totalPossibilities += Math.pow(letters.length, len - (prefix?.length || 0) - (suffix?.length || 0));
+        }
+    }
+    return totalPossibilities; 
+}
