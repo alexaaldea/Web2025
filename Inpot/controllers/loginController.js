@@ -6,7 +6,15 @@ const loginController = {
         const loginButton = document.getElementById('login');
         const formLabel = document.getElementById('form-label');
 
+        const firstName = document.getElementById('first-name');
+        const lastName = document.getElementById('last-name');
+
         let isSignup = false;
+
+        firstName.setAttribute('disabled', 'true');
+        lastName.setAttribute('disabled', 'true');
+        firstName.removeAttribute('required');
+        lastName.removeAttribute('required');
 
         toggleLink.addEventListener('click', (e) => {
             e.preventDefault();
@@ -19,8 +27,17 @@ const loginController = {
             toggleLink.innerHTML = isSignup ? 'Already have an account? <br><strong> Login now!</strong>' : "Don't have an account? <br><strong> Register now! </strong>";
 
            
-            document.getElementById('first-name').required = isSignup;
-            document.getElementById('last-name').required = isSignup;
+            if (isSignup) {
+                firstName.removeAttribute('disabled');
+                lastName.removeAttribute('disabled');
+                firstName.setAttribute('required', 'required');
+                lastName.setAttribute('required', 'required');
+            } else {
+                firstName.removeAttribute('required');
+                lastName.removeAttribute('required');
+                firstName.setAttribute('disabled', 'true');
+                lastName.setAttribute('disabled', 'true');
+            }
         });
 
         
