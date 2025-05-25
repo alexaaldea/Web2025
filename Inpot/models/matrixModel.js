@@ -1,6 +1,9 @@
 export const matrixModel = {
-    generateMatrix(row, col, min, max, parity, sign, map) {
+    generateMatrix(row,col,min,max,parity,sign,unique,map) {
+
         const matrix = [];
+        const results = new Set();
+        const useUnique = unique === 'yes';
 
         for (let i = 0; i < row; i++) {
             const rowArr = [];
@@ -28,6 +31,12 @@ export const matrixModel = {
                     } else if (parity === 'odd' && Math.abs(num) % 2 !== 1) {
                         isValid = false;
                     }
+                    if(useUnique)
+                    {
+                    results.add(num);
+                    if (results.size != i*col+j+1)
+                    isValid = false;
+                    }
 
                     if (isValid) {
                         break;
@@ -41,8 +50,11 @@ export const matrixModel = {
 
                 rowArr.push(num);
             }
-
+            if(!useUnique)
             matrix.push(rowArr);
+            else
+            matrix.push(results)
+
         }
 
         return matrix;

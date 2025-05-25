@@ -69,9 +69,10 @@ const mainController = {
         const max = parseInt(document.getElementById('matrix-max').value);
         const parity = document.getElementById('matrix-parity').value;
         const sign = document.getElementById('matrix-sign').value;
+        const unique = document.getElementById('matrix-unique').value;
         const map = document.getElementById('matrix-map').value;
 
-        const matrixs=matrixModel.generateMatrix(row,col,min,max,parity,sign,map);
+        const matrixs=matrixModel.generateMatrix(row,col,min,max,parity,sign,unique,map);
 
         document.getElementById('matrix-output').textContent=matrixs.join('\n');
 
