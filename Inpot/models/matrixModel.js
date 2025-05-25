@@ -46,5 +46,5 @@ export const matrixModel = {
         }
 
         return matrix;
-    },
+    }
 };
