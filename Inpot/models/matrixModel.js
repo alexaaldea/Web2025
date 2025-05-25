@@ -1,9 +1,30 @@
 export const matrixModel = {
-    generateMatrix(row,col,min,max,parity,sign,unique,map) {
+    generateMatrix(row, col, min, max, parity, sign, unique, map) {
 
         const matrix = [];
         const results = new Set();
         const useUnique = unique === 'yes';
+
+
+        const total_elem = row * col;
+
+        if (useUnique) {
+            let validValues = [];
+
+            for (let num = min; num <= max; num++) {
+                if (sign === '+' && num < 0) continue;
+                if (sign === '-' && num > 0) continue;
+
+                if (parity === 'even' && Math.abs(num) % 2 !== 0) continue;
+                if (parity === 'odd' && Math.abs(num) % 2 !== 1) continue;
+
+                validValues.push(num);
+            }
+
+            if (validValues.length < total_elem) {
+                return ['Impossible to generate that many unique strings.'];
+            }
+        }
 
         for (let i = 0; i < row; i++) {
             const rowArr = [];
@@ -11,31 +32,31 @@ export const matrixModel = {
             for (let j = 0; j < col; j++) {
                 let num;
                 let attempts = 0;
-                const maxAttempts = 100;
+                const maxAttempts = 10000;
 
                 while (attempts < maxAttempts) {
                     attempts++;
 
-                    num = Math.floor(Math.random() * (max - min + 1)) + min;
-
-                    if (sign === '+' && num < 0) {
-                        num = -num;
-                    } else if (sign === '-' && num > 0) {
-                        num = -num;
-                    }
+                    num = min+Math.floor(Math.random() * (max - min + 1));
 
                     let isValid = true;
 
                     if (parity === 'even' && Math.abs(num) % 2 !== 0) {
                         isValid = false;
-                    } else if (parity === 'odd' && Math.abs(num) % 2 !== 1) {
+                    } else 
+                    if (parity === 'odd' && Math.abs(num) % 2 !== 1) {
+                        isValid = false;
+                    } else
+                    if (sign === '+' && num < 0) {
+                        isValid = false;
+                    } else if (sign === '-' && num > 0) {
                         isValid = false;
                     }
-                    if(useUnique)
-                    {
-                    results.add(num);
-                    if (results.size != i*col+j+1)
-                    isValid = false;
+
+                    if (useUnique) {
+                        results.add(num);
+                        if (results.size != i * col + j + 1)
+                            isValid = false;
                     }
 
                     if (isValid) {
@@ -44,16 +65,14 @@ export const matrixModel = {
                 }
 
                 if (attempts >= maxAttempts) {
-                    throw new Error(`Could not find a valid number after ${maxAttempts} attempts. Check your constraints.`);
+                    return [`Could not find a valid number after ${maxAttempts} attempts. Check your constraints.`];
                 }
 
 
                 rowArr.push(num);
             }
-            if(!useUnique)
+
             matrix.push(rowArr);
-            else
-            matrix.push(results)
 
         }
 
