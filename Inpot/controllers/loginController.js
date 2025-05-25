@@ -51,7 +51,7 @@ const loginController = {
             if (!isSignup) {
                 actionUrl = '/Web2025/Inpot/config/login-jwt.php';
             } else {
-                actionUrl = '/Web2025/Inpot/config/signup.php';
+                actionUrl = '/Web2025/Inpot/config/signin.php';
             }
             const formData = new FormData();
             formData.append('email', email);
@@ -66,9 +66,12 @@ const loginController = {
                 });
                 const result = await response.text();
                 if (response.ok) {
+                    if(!isSignup)
                     window.location.href = '../views/main.html';
+                    else
+                    window.location.href = '../views/login.html';
                 } else {
-                    alert(result);
+                   
                 }
             } catch (error) {
                 alert('Error: ' + error);

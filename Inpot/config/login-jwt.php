@@ -19,7 +19,7 @@ $stmt = $pdo->prepare('SELECT id, password FROM users WHERE email = :email');
 $stmt->execute(['email' => $email]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$user || $user['password'] !== $password) {
+if (!$user || !password_verify($password, $user['password'])) {
     http_response_code(401);
     echo 'Invalid email or password.';
     exit;
@@ -31,7 +31,6 @@ $payload = [
     "iss" => "https://www.inpot.local",
     "iat" => $iss_time,
     "exp" => $iss_time + 60 * 60 * 24 * 15, 
-    "user_id" => $user['id'],
     "email" => $email,
 ];
 
