@@ -5,7 +5,7 @@ import { stringModel } from '../models/stringModel.js';
 import { treeModel } from '../models/treeModel.js';
 import { graphModel } from '../models/graphModel.js';
 
-const mainController = {
+export const mainController = {
     showContainer(containerId) {
         const containers = document.querySelectorAll('.container');
         containers.forEach(el => el.style.display = 'none');
@@ -18,15 +18,28 @@ const mainController = {
 
 
     generateNumbers() {
-        const min = parseInt(document.getElementById('number-min').value);
-        const max = parseInt(document.getElementById('number-max').value);
+        const min = parseFloat(document.getElementById('number-min').value);
+        const max = parseFloat(document.getElementById('number-max').value);
         const count = parseInt(document.getElementById('number-count').value);
         const parity = document.getElementById('number-parity').value;
         const sign = document.getElementById('number-sign').value;
         const sorted = document.getElementById('number-sorted').value;
+        const unique = document.getElementById('number-unique').value === 'yes';;
+        const type = document.getElementById('number-type').value;
+        const pattern = document.getElementById('number-pattern').value;
+
+        const includeZero = document.getElementById('include-zero').checked;
+        const includeMin = document.getElementById('include-min').checked;
+        const includeMax = document.getElementById('include-max').checked;
 
 
-        const numbers = numberModel.generateNumbers(min, max, count, parity, sign, sorted);
+        const edgeEmpty = document.getElementById('edge-empty').checked;
+        const edgeSingle = document.getElementById('edge-single').checked;
+        const edgeAllEqual = document.getElementById('edge-all-equal').checked;
+
+        const step = parseFloat(document.getElementById('step-size').value);
+
+        const numbers = numberModel.generateNumbers(min, max, count, parity, sign, sorted, unique, type, pattern, includeZero, includeMin, includeMax, edgeEmpty, edgeSingle, edgeAllEqual, step);
 
 
         document.getElementById('number-output').textContent = numbers.join(', ');
@@ -38,9 +51,13 @@ const mainController = {
         const unique = document.getElementById('string-unique').value;
         const letters = document.getElementById('string-letter').value.split(',');
         const count = parseInt(document.getElementById('string-count').value);
+        const sameLength = parseInt(document.getElementById('same-length').value);
+        const prefix = document.getElementById('include-prefix').value;
+        const suffix = document.getElementById('include-suffix').value;
+        const sorting = document.getElementById('sorting').value;
 
 
-        const strings = stringModel.generateStrings(minLength, maxLength, unique, letters, count);
+        const strings = stringModel.generateStrings(minLength, maxLength, unique, letters, count, sameLength, prefix, suffix, sorting);
 
 
         document.getElementById('string-output').textContent = strings.join('\n');
@@ -91,8 +108,8 @@ const mainController = {
 
 
         const graphs = graphModel.generateGraph(node, edge, oriented, connected, bipartit, weighted, min_weight, max_weight, format);
-
         document.getElementById('graph-output').textContent = graphs.join(' ');
+
 
     },
 
@@ -104,7 +121,8 @@ const mainController = {
 
         const trees = treeModel.generateTree(node, oriented, output_format);
 
-        document.getElementById('tree-output').textContent = trees.join(' ');
+        document.getElementById('tree-output').textContent=trees.join('\n');
+
 
     },
 
