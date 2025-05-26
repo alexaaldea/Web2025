@@ -62,65 +62,67 @@ export const mainController = {
 
         document.getElementById('string-output').textContent = strings.join('\n');
     },
-    
-    generateVector(){
 
-        const elem =parseInt(document.getElementById('vector-length').value);
+    generateVector() {
+
+        const elem = parseInt(document.getElementById('vector-length').value);
         const min = parseInt(document.getElementById('vector-min').value);
         const max = parseInt(document.getElementById('vector-max').value);
         const parity = document.getElementById('vector-parity').value;
         const sign = document.getElementById('vector-sign').value;
         const sorted = document.getElementById('vector-sorted').value;
 
-        const vect=vectorModel.generateVector(elem,min,max,parity,sign,sorted);
+        const vect = vectorModel.generateVector(elem, min, max, parity, sign, sorted);
 
-        document.getElementById('vector-output').textContent=vect.join('\n');
+        document.getElementById('vector-output').textContent = vect.join('\n');
 
     },
 
-    generateMatrix(){
+    generateMatrix() {
 
-        const row =parseInt(document.getElementById('matrix-rows').value);
-        const col =parseInt(document.getElementById('matrix-cols').value);
+        const row = parseInt(document.getElementById('matrix-rows').value);
+        const col = parseInt(document.getElementById('matrix-cols').value);
         const min = parseInt(document.getElementById('matrix-min').value);
         const max = parseInt(document.getElementById('matrix-max').value);
         const parity = document.getElementById('matrix-parity').value;
         const sign = document.getElementById('matrix-sign').value;
+        const unique = document.getElementById('matrix-unique').value;
         const map = document.getElementById('matrix-map').value;
 
-        const matrixs=matrixModel.generateMatrix(row,col,min,max,parity,sign,map);
+        const matrixs = matrixModel.generateMatrix(row, col, min, max, parity, sign, unique, map);
 
-        document.getElementById('matrix-output').textContent=matrixs.join('\n');
+        document.getElementById('matrix-output').textContent = matrixs.join('\n');
 
     },
-    generateGraph(){
+    generateGraph() {
 
-        const node =parseInt(document.getElementById('graph-nodes').value);
-        const edge =parseInt(document.getElementById('graph-edges').value);
+        const node = parseInt(document.getElementById('graph-nodes').value);
+        const edge = parseInt(document.getElementById('graph-edges').value);
         const oriented = document.getElementById('graph-oriented').value;
         const connected = document.getElementById('graph-connected').value;
         const bipartit = document.getElementById('graph-bipartit').value;
         const weighted = document.getElementById('graph-weighted').value;
-        const min_weight =parseInt(document.getElementById('graph-min-weight').value);
-        const max_weight =parseInt(document.getElementById('graph-max-weight').value);
+        const min_weight = parseInt(document.getElementById('graph-min-weight').value);
+        const max_weight = parseInt(document.getElementById('graph-max-weight').value);
         const format = document.getElementById('graph-format').value;
 
 
-        const graphs=graphModel.generateGraph(node,edge,oriented,connected,bipartit,weighted,min_weight,max_weight,format);
+        const graphs = graphModel.generateGraph(node, edge, oriented, connected, bipartit, weighted, min_weight, max_weight, format);
+        document.getElementById('graph-output').textContent = graphs.join(' ');
 
-        document.getElementById('graph-output').textContent=graphs.join('\n');
 
     },
 
-    generateTree(){
+    generateTree() {
 
-        const node =parseInt(document.getElementById('tree-nodes').value);
+        const node = parseInt(document.getElementById('tree-nodes').value);
         const oriented = document.getElementById('tree-oriented').value;
         const output_format = document.getElementById('tree-format').value;
 
-        const trees=treeModel.generateTree(node,oriented,output_format);
+        const trees = treeModel.generateTree(node, oriented, output_format);
 
         document.getElementById('tree-output').textContent=trees.join('\n');
+
 
     },
 
@@ -149,9 +151,45 @@ export const mainController = {
                 })
                 .then(html => {
                     document.getElementById(component).innerHTML = html;
+                    if (component === 'matrix') {
+                        this.setupMatrixMapListener();
+                    }
                 })
                 .catch(error => console.error(`Error loading ${component}:`, error));
+
         });
+    },
+
+    setupMatrixMapListener() {
+        const mapSelect = document.getElementById('matrix-map');
+        const signGroup = document.getElementById('matrix-sign');
+        const parityGroup = document.getElementById('matrix-parity');
+        const uniqueGroup = document.getElementById('matrix-unique');
+        const maxGroup = document.getElementById('matrix-max');
+        const minGroup = document.getElementById('matrix-min');
+
+
+        if (!mapSelect || !signGroup || !parityGroup || !uniqueGroup || !maxGroup|| !minGroup) {
+            console.warn('Matrix input elements not found.');
+            return;
+        }
+
+        const toggleVisibility = () => {
+            const shouldHide = mapSelect.value === 'yes';
+            signGroup.style.display = shouldHide ? 'none' : 'inline-block';
+            parityGroup.style.display = shouldHide ? 'none' : 'inline-block';
+            uniqueGroup.style.display = shouldHide ? 'none' : 'inline-block';
+            minGroup.style.display = shouldHide ? 'none' : 'inline-block';
+            maxGroup.style.display = shouldHide ? 'none' : 'inline-block';
+           
+            ['matrix-sign', 'matrix-parity', 'matrix-unique', 'matrix-min', 'matrix-max'].forEach(id => {
+                const label = document.querySelector(`label[for="${id}"]`);
+                if (label) label.style.display = shouldHide ? 'none' : 'inline-block';
+            });
+        };
+
+        mapSelect.addEventListener('change', toggleVisibility);
+        toggleVisibility();
     },
 
 
@@ -170,10 +208,8 @@ export const mainController = {
     init() {
         this.loadSidebar();
         this.loadComponents();
+        this.addNavigationListeners();
 
-        document.addEventListener('DOMContentLoaded', () => {
-            this.addNavigationListeners();
-        });
     }
 };
 
