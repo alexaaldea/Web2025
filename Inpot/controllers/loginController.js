@@ -1,3 +1,22 @@
+(async function checkJwt() {
+    const cookieString = document.cookie;
+    const jwtCookie = cookieString.split('; ').find(row => row.startsWith('jwt='));
+    if (jwtCookie) {
+        try {
+            const response = await fetch('/Web2025/Inpot/config/verify-jwt.php');
+            if (response.ok) {
+                const data = await response.json();
+                if (data.message === 'valid') {
+                    window.location.href = '../views/main.html';
+                    return; 
+                }
+            }
+        } catch (error) {
+            console.error('Token verification failed:', error);
+        }
+    }
+})();
+ 
 const loginController = {
     init() {
         const toggleLink = document.getElementById('toggle-form');
@@ -26,7 +45,6 @@ const loginController = {
             formLabel.textContent = isSignup ? 'Fill in all fields to create an account' : 'Enter your email and password';
             toggleLink.innerHTML = isSignup ? 'Already have an account? <br><strong> Login now!</strong>' : "Don't have an account? <br><strong> Register now! </strong>";
 
-           
             if (isSignup) {
                 firstName.removeAttribute('disabled');
                 lastName.removeAttribute('disabled');
@@ -40,7 +58,6 @@ const loginController = {
             }
         });
 
-        
         document.getElementById('auth-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const email = document.getElementById('email').value;
@@ -66,12 +83,12 @@ const loginController = {
                 });
                 const result = await response.text();
                 if (response.ok) {
-                    if(!isSignup)
-                    window.location.href = '../views/main.html';
+                    if (!isSignup)
+                        window.location.href = '../views/main.html';
                     else
-                    window.location.href = '../views/login.html';
+                        window.location.href = '../views/login.html';
                 } else {
-                   
+                    
                 }
             } catch (error) {
                 alert('Error: ' + error);
