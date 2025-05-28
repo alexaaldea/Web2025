@@ -15,6 +15,25 @@ export const mainController = {
             selected.style.display = 'block';
         }
     },
+      verifyJWT() {
+        fetch('../config/verify-jwt.php')
+            .then(response => {
+                if (!response.ok) {
+                    window.location.href = 'login.php';
+                    throw new Error('Invalid token');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.message !== 'valid') {
+                    window.location.href = 'login.php';
+                }
+            })
+            .catch(error => {
+                console.error('JWT verification failed:', error);
+                window.location.href = 'login.php';
+            });
+    },
 
 
     generateNumbers() {
@@ -159,6 +178,10 @@ export const mainController = {
 
         });
     },
+    logout()
+    {
+        window.location.href = '../config/logout.php';
+    },
 
     setupMatrixMapListener() {
         const mapSelect = document.getElementById('matrix-map');
@@ -215,6 +238,7 @@ export const mainController = {
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    mainController.verifyJWT();
     mainController.init();
 });
 
