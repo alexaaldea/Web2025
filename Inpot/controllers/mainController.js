@@ -43,7 +43,7 @@ export const mainController = {
         const parity = document.getElementById('number-parity').value;
         const sign = document.getElementById('number-sign').value;
         const sorted = document.getElementById('number-sorted').value;
-        const unique = document.getElementById('number-unique').value === 'yes';;
+        const unique = document.getElementById('number-unique').value === 'yes';
         const type = document.getElementById('number-type').value;
         const pattern = document.getElementById('number-pattern').value;
 
@@ -90,11 +90,24 @@ export const mainController = {
         const parity = document.getElementById('vector-parity').value;
         const sign = document.getElementById('vector-sign').value;
         const sorted = document.getElementById('vector-sorted').value;
+        const unique = document.getElementById('vector-unique').value === 'yes';
+        const type = document.getElementById('vector-type').value;
+        const palindrome = document.getElementById('vector-palindrome').value;
+        const line =parseInt(document.getElementById('vector-line').value);
 
-        const vect = vectorModel.generateVector(elem, min, max, parity, sign, sorted);
+        const vect=vectorModel.generateVector(elem,min,max,parity,sign,sorted,unique,type,palindrome,line);
 
-        document.getElementById('vector-output').textContent = vect.join('\n');
 
+        let output = "";
+        if (line > 0) {
+        for (let i = 0; i < vect.length; i += line) {
+            output += vect.slice(i, i + line).join(' ') + "\n";
+        }
+        }else {
+        output = vect.join('\n');
+        }
+        
+        document.getElementById('vector-output').textContent = output;
     },
 
     generateMatrix() {
