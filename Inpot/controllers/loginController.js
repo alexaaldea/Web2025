@@ -87,8 +87,6 @@ const loginController = {
                         window.location.href = '../views/main.html';
                     else
                         window.location.href = '../views/login.html';
-                } else {
-                    
                 }
             } catch (error) {
                 alert('Error: ' + error);
