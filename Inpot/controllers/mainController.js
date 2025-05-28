@@ -127,7 +127,7 @@ export const mainController = {
 
 
         const graphs = graphModel.generateGraph(node, edge, oriented, connected, bipartit, weighted, min_weight, max_weight, format);
-        document.getElementById('graph-output').textContent = graphs.join(' ');
+        document.getElementById('graph-output').textContent = graphs.join('\n');
 
 
     },
