@@ -2,6 +2,9 @@ import { numberModel } from './numberModel.js';
 export const vectorModel = {
 
     generateVector(elem, min, max, parity, sign, sorted, unique, type, palindrome, line){
+        if(line>elem){
+            return ['Invalid line length'];
+        }
         let numbers = [];
         if(palindrome ==='yes'){
             for(let i = 0; i < elem; i++){
