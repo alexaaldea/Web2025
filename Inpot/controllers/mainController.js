@@ -79,8 +79,16 @@ export const mainController = {
 
         const vect=vectorModel.generateVector(elem,min,max,parity,sign,sorted,unique,type,palindrome,line);
 
-        document.getElementById('vector-output').textContent=vect.join('\n');
-
+        let output = "";
+        if (line > 0) {
+        for (let i = 0; i < vect.length; i += line) {
+            output += vect.slice(i, i + line).join(' ') + "\n";
+        }
+        }else {
+        output = vect.join('\n');
+        }
+        
+        document.getElementById('vector-output').textContent = output;
     },
 
     generateMatrix(){
