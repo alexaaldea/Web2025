@@ -110,29 +110,29 @@ export const mainController = {
     document.getElementById('vector-output').textContent = output;
     },
 
-//     exportVectorAsJson() {
-//     const elem = parseInt(document.getElementById('vector-length').value);
-//     const min = parseInt(document.getElementById('vector-min').value);
-//     const max = parseInt(document.getElementById('vector-max').value);
-//     const parity = document.getElementById('vector-parity').value;
-//     const sign = document.getElementById('vector-sign').value;
-//     const sorted = document.getElementById('vector-sorted').value;
-//     const unique = document.getElementById('vector-unique').value === 'yes';
-//     const type = document.getElementById('vector-type').value;
-//     const palindrome = document.getElementById('vector-palindrome').value;
-//     const line = parseInt(document.getElementById('vector-line').value);
+    exportVectorAsJson() {
+    const elem = parseInt(document.getElementById('vector-length').value);
+    const min = parseInt(document.getElementById('vector-min').value);
+    const max = parseInt(document.getElementById('vector-max').value);
+    const parity = document.getElementById('vector-parity').value;
+    const sign = document.getElementById('vector-sign').value;
+    const sorted = document.getElementById('vector-sorted').value;
+    const unique = document.getElementById('vector-unique').value === 'yes';
+    const type = document.getElementById('vector-type').value;
+    const palindrome = document.getElementById('vector-palindrome').value;
+    const line = parseInt(document.getElementById('vector-line').value);
 
-//     const jsonOutput = vectorModel.generateVectorJson(elem, min, max, parity, sign, sorted, unique, type, palindrome, line);
+    const jsonOutput = vectorModel.generateVectorJson(elem, min, max, parity, sign, sorted, unique, type, palindrome, line);
 
-//     // Option 2: Trigger JSON file download
-//     const blob = new Blob([jsonOutput], { type: 'application/json' });
-//     const url = URL.createObjectURL(blob);
-//     const a = document.createElement('a');
-//     a.href = url;
-//     a.download = 'vector.json';
-//     a.click();
-//     URL.revokeObjectURL(url);
-// },
+    // Option 2: Trigger JSON file download
+    const blob = new Blob([jsonOutput], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'vector.json';
+    a.click();
+    URL.revokeObjectURL(url);
+},
 
 
     generateMatrix() {
