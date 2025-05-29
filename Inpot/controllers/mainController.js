@@ -110,26 +110,24 @@ export const mainController = {
     document.getElementById('vector-output').textContent = output;
     },
 
-    exportVectorAsJson() {
-    const elem = parseInt(document.getElementById('vector-length').value);
-    const min = parseInt(document.getElementById('vector-min').value);
-    const max = parseInt(document.getElementById('vector-max').value);
-    const parity = document.getElementById('vector-parity').value;
-    const sign = document.getElementById('vector-sign').value;
-    const sorted = document.getElementById('vector-sorted').value;
-    const unique = document.getElementById('vector-unique').value === 'yes';
-    const type = document.getElementById('vector-type').value;
-    const palindrome = document.getElementById('vector-palindrome').value;
-    const line = parseInt(document.getElementById('vector-line').value);
+  exportVectorAsJson() {
+    const outputText = document.getElementById('vector-output').textContent;
 
-    const jsonOutput = vectorModel.generateVectorJson(elem, min, max, parity, sign, sorted, unique, type, palindrome, line);
+    // Convert string output into an array (split by line and then by space)
+    const vectorArray = outputText
+        .trim()
+        .split('\n')
+        .map(line => line.trim().split(/\s+/).map(Number));
 
-    // Option 2: Trigger JSON file download
-    const blob = new Blob([jsonOutput], { type: 'application/json' });
+    // If it's a flat array, just flatten it (depending on your output format)
+    const isFlat = vectorArray.length === 1;
+    const jsonContent = isFlat ? JSON.stringify(vectorArray[0], null, 2) : JSON.stringify(vectorArray, null, 2);
+
+    const blob = new Blob([jsonContent], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'vector.json';
+    a.download = 'vector_output.json';
     a.click();
     URL.revokeObjectURL(url);
 },
