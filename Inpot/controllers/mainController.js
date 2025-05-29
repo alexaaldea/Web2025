@@ -4,6 +4,8 @@ import { numberModel } from '../models/numberModel.js';
 import { stringModel } from '../models/stringModel.js';
 import { treeModel } from '../models/treeModel.js';
 import { graphModel } from '../models/graphModel.js';
+import { exportAsJson, parseTextOutputToArray } from '../utils/exportUtils.js';
+
 
 export const mainController = {
     showContainer(containerId) {
@@ -15,7 +17,7 @@ export const mainController = {
             selected.style.display = 'block';
         }
     },
-      verifyJWT() {
+    verifyJWT() {
         fetch('../config/verify-jwt.php')
             .then(response => {
                 if (!response.ok) {
@@ -93,45 +95,22 @@ export const mainController = {
         const unique = document.getElementById('vector-unique').value === 'yes';
         const type = document.getElementById('vector-type').value;
         const palindrome = document.getElementById('vector-palindrome').value;
-        const line =parseInt(document.getElementById('vector-line').value);
+        const line = parseInt(document.getElementById('vector-line').value);
 
-        const vect=vectorModel.generateVector(elem,min,max,parity,sign,sorted,unique,type,palindrome,line);
+        const vect = vectorModel.generateVector(elem, min, max, parity, sign, sorted, unique, type, palindrome, line);
 
 
         let output = "";
-    if (!isNaN(line) && line > 0) {
-        for (let i = 0; i < vect.length; i += line) {
-            output += vect.slice(i, i + line).join(' ') + "\n";
+        if (!isNaN(line) && line > 0) {
+            for (let i = 0; i < vect.length; i += line) {
+                output += vect.slice(i, i + line).join(' ') + "\n";
+            }
+        } else {
+            output = vect.join(' ');
         }
-    } else {
-        output = vect.join(' ');
-    }
-        
-    document.getElementById('vector-output').textContent = output;
+
+        document.getElementById('vector-output').textContent = output;
     },
-
-  exportVectorAsJson() {
-    const outputText = document.getElementById('vector-output').textContent;
-
-    // Convert string output into an array (split by line and then by space)
-    const vectorArray = outputText
-        .trim()
-        .split('\n')
-        .map(line => line.trim().split(/\s+/).map(Number));
-
-    // If it's a flat array, just flatten it (depending on your output format)
-    const isFlat = vectorArray.length === 1;
-    const jsonContent = isFlat ? JSON.stringify(vectorArray[0], null, 2) : JSON.stringify(vectorArray, null, 2);
-
-    const blob = new Blob([jsonContent], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'vector_output.json';
-    a.click();
-    URL.revokeObjectURL(url);
-},
-
 
     generateMatrix() {
 
@@ -176,9 +155,46 @@ export const mainController = {
 
         const trees = treeModel.generateTree(node, oriented, output_format);
 
-        document.getElementById('tree-output').textContent=trees.join('\n');
+        document.getElementById('tree-output').textContent = trees.join('\n');
 
 
+    },
+
+
+    exportVectorAsJson() {
+        const outputText = document.getElementById('vector-output').textContent;
+        const data = parseTextOutputToArray(outputText);
+        exportAsJson(data, 'vector_output.json');
+    },
+
+    exportMatrixAsJson() {
+        const outputText = document.getElementById('matrix-output').textContent;
+        const data = parseTextOutputToArray(outputText);
+        exportAsJson(data, 'matrix_output.json');
+    },
+
+    exportTreeAsJson() {
+        const outputText = document.getElementById('tree-output').textContent;
+        const lines = outputText.trim().split('\n');
+        exportAsJson(lines, 'tree_output.json');
+    },
+
+    exportStringAsJson() {
+        const outputText = document.getElementById('string-output').textContent;
+        const lines = outputText.trim().split('\n');
+        exportAsJson(lines, 'string_output.json');
+    },
+
+    exportGraphAsJson() {
+        const outputText = document.getElementById('graph-output').textContent;
+        const items = outputText.trim().split(/\s+/);
+        exportAsJson(items, 'graph_output.json');
+    },
+
+    exportNumbersAsJson() {
+        const outputText = document.getElementById('number-output').textContent;
+        const numbers = outputText.trim().split(',').map(Number);
+        exportAsJson(numbers, 'numbers_output.json');
     },
 
 
@@ -214,8 +230,7 @@ export const mainController = {
 
         });
     },
-    logout()
-    {
+    logout() {
         window.location.href = '../config/logout.php';
     },
 
@@ -228,7 +243,7 @@ export const mainController = {
         const minGroup = document.getElementById('matrix-min');
 
 
-        if (!mapSelect || !signGroup || !parityGroup || !uniqueGroup || !maxGroup|| !minGroup) {
+        if (!mapSelect || !signGroup || !parityGroup || !uniqueGroup || !maxGroup || !minGroup) {
             console.warn('Matrix input elements not found.');
             return;
         }
@@ -240,7 +255,7 @@ export const mainController = {
             uniqueGroup.style.display = shouldHide ? 'none' : 'inline-block';
             minGroup.style.display = shouldHide ? 'none' : 'inline-block';
             maxGroup.style.display = shouldHide ? 'none' : 'inline-block';
-           
+
             ['matrix-sign', 'matrix-parity', 'matrix-unique', 'matrix-min', 'matrix-max'].forEach(id => {
                 const label = document.querySelector(`label[for="${id}"]`);
                 if (label) label.style.display = shouldHide ? 'none' : 'inline-block';
