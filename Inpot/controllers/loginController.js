@@ -30,8 +30,8 @@ const loginController = {
 
         let isSignup = false;
 
-        firstName.setAttribute('disabled', 'true');
-        lastName.setAttribute('disabled', 'true');
+        firstName.disabled = true;
+        lastName.disabled = true;
         firstName.removeAttribute('required');
         lastName.removeAttribute('required');
 
@@ -46,15 +46,15 @@ const loginController = {
             toggleLink.innerHTML = isSignup ? 'Already have an account? <br><strong> Login now!</strong>' : "Don't have an account? <br><strong> Register now! </strong>";
 
             if (isSignup) {
-                firstName.removeAttribute('disabled');
-                lastName.removeAttribute('disabled');
+                firstName.disabled = false;
+                lastName.disabled = false;
                 firstName.setAttribute('required', 'required');
                 lastName.setAttribute('required', 'required');
             } else {
                 firstName.removeAttribute('required');
                 lastName.removeAttribute('required');
-                firstName.setAttribute('disabled', 'true');
-                lastName.setAttribute('disabled', 'true');
+                firstName.disabled = true;
+                lastName.disabled = true;
             }
         });
 

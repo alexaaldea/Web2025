@@ -5,6 +5,8 @@ import { stringModel } from '../models/stringModel.js';
 import { treeModel } from '../models/treeModel.js';
 import { graphModel } from '../models/graphModel.js';
 import { createGraphSVG } from '../models/create_svg.js';
+import { exportAsJson, parseTextOutputToArray } from '../utils/exportUtils.js';
+
 
 export const mainController = {
     showContainer(containerId) {
@@ -16,7 +18,7 @@ export const mainController = {
             selected.style.display = 'block';
         }
     },
-      verifyJWT() {
+    verifyJWT() {
         fetch('../config/verify-jwt.php')
             .then(response => {
                 if (!response.ok) {
@@ -44,7 +46,7 @@ export const mainController = {
         const parity = document.getElementById('number-parity').value;
         const sign = document.getElementById('number-sign').value;
         const sorted = document.getElementById('number-sorted').value;
-        const unique = document.getElementById('number-unique').value === 'yes';;
+        const unique = document.getElementById('number-unique').value === 'yes';
         const type = document.getElementById('number-type').value;
         const pattern = document.getElementById('number-pattern').value;
 
@@ -91,12 +93,25 @@ export const mainController = {
         const parity = document.getElementById('vector-parity').value;
         const sign = document.getElementById('vector-sign').value;
         const sorted = document.getElementById('vector-sorted').value;
+        const unique = document.getElementById('vector-unique').value === 'yes';
+        const type = document.getElementById('vector-type').value;
+        const palindrome = document.getElementById('vector-palindrome').value;
+        const line = parseInt(document.getElementById('vector-line').value);
 
-        const vect = vectorModel.generateVector(elem, min, max, parity, sign, sorted);
+        const vect = vectorModel.generateVector(elem, min, max, parity, sign, sorted, unique, type, palindrome, line);
 
-        document.getElementById('vector-output').textContent = vect.join('\n');
 
+        let output = "";
+        if (!isNaN(line) && line > 0) {
+            for (let i = 0; i < vect.length; i += line) {
+                output += vect.slice(i, i + line).join(' ') + "\n";
+            }
+        } else {
+            output = vect.join(' ');
+        }
+        document.getElementById('vector-output').textContent = output;
     },
+
 
     generateMatrix() {
 
@@ -154,6 +169,190 @@ export const mainController = {
         } catch (e) {
             document.getElementById('tree-output').textContent = "Error: " + e.message;
         }
+
+
+    },
+
+    saveNumberInputs() {
+    const payload = {
+        min: parseFloat(document.getElementById('number-min').value),
+        max: parseFloat(document.getElementById('number-max').value),
+        count: parseInt(document.getElementById('number-count').value),
+        parity: document.getElementById('number-parity').value,
+        sign: document.getElementById('number-sign').value,
+        sorted: document.getElementById('number-sorted').value,
+        type: document.getElementById('number-type').value,
+        unique: document.getElementById('number-unique').value === 'yes',
+        pattern: document.getElementById('number-pattern').value,
+        step: parseFloat(document.getElementById('step-size').value),
+        includeZero: document.getElementById('include-zero').checked,
+        includeMin: document.getElementById('include-min').checked,
+        includeMax: document.getElementById('include-max').checked,
+        edgeEmpty: document.getElementById('edge-empty').checked,
+        edgeSingle: document.getElementById('edge-single').checked,
+        edgeAllEqual: document.getElementById('edge-all-equal').checked
+    };
+
+    fetch('../config/save-number-inputs.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        const statusDiv = document.getElementById('save-status');
+        if (data.success) {
+            statusDiv.textContent = 'Inputs saved successfully!';
+            statusDiv.style.color = 'green';
+        } else {
+            statusDiv.textContent = data.error || 'Failed to save inputs.';
+            statusDiv.style.color = 'red';
+        }
+    })
+    .catch(err => {
+        console.error('Save error:', err);
+        document.getElementById('save-status').textContent = 'Save failed';
+    });
+},
+
+ saveStringInputs() {
+    const payload = {
+        stringMin: parseInt(document.getElementById('string-min').value),
+        stringMax: parseInt(document.getElementById('string-max').value),
+        sameLength: parseInt(document.getElementById('same-length').value),
+        includePrefix: document.getElementById('include-prefix').value || null,
+        includeSuffix: document.getElementById('include-suffix').value || null,
+        sorting: document.getElementById('sorting').value || null,
+        stringUnique: document.getElementById('string-unique').checked,
+        stringLetter: document.getElementById('string-letter').value || null,
+        stringCount: parseInt(document.getElementById('string-count').value)
+    };
+
+    fetch('../config/save-string-inputs.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        const statusDiv = document.getElementById('save-status-string');
+        if (data.success) {
+            statusDiv.textContent = 'Inputs saved successfully!';
+            statusDiv.style.color = 'green';
+        } else {
+            statusDiv.textContent = data.error || 'Failed to save inputs.';
+            statusDiv.style.color = 'red';
+        }
+    })
+    .catch(err => {
+        console.error('Save error:', err);
+        document.getElementById('save-status-string').textContent = 'Save failed';
+    });
+},
+saveVectorInputs() {
+    const payload = {
+        length: parseInt(document.getElementById('vector-length').value),
+        min: parseFloat(document.getElementById('vector-min').value),
+        max: parseFloat(document.getElementById('vector-max').value),
+        parity: document.getElementById('vector-parity').value || null,
+        sign: document.getElementById('vector-sign').value || null,
+        type: document.getElementById('vector-type').value || null,
+        unique: document.getElementById('vector-unique').value === 'yes',
+        palindrome: document.getElementById('vector-palindrome').value === 'yes',
+        line: parseInt(document.getElementById('vector-line').value),
+        sorted: document.getElementById('vector-sorted').value || null
+    };
+
+    fetch('../config/save-vector-inputs.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        const statusDiv = document.getElementById('save-status-vector');
+        if (data.success) {
+            statusDiv.textContent = 'Vector inputs saved successfully!';
+            statusDiv.style.color = 'green';
+        } else {
+            statusDiv.textContent = data.error || 'Failed to save vector inputs.';
+            statusDiv.style.color = 'red';
+        }
+    })
+    .catch(err => {
+        console.error('Save error:', err);
+        document.getElementById('save-status-vector').textContent = 'Save failed';
+    });
+},
+
+saveMatrixInputs() {
+    const payload = {
+        rows: parseInt(document.getElementById('matrix-rows').value),
+        cols: parseInt(document.getElementById('matrix-cols').value),
+        map: document.getElementById('matrix-map').value,
+        min: parseFloat(document.getElementById('matrix-min').value),
+        max: parseFloat(document.getElementById('matrix-max').value),
+        parity: document.getElementById('matrix-parity').value || null,
+        unique: document.getElementById('matrix-unique').value === 'yes',
+        sign: document.getElementById('matrix-sign').value || null
+    };
+
+    fetch('../config/save-matrix-inputs.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        const statusDiv = document.getElementById('save-status-matrix');
+        if (data.success) {
+            statusDiv.textContent = 'Matrix inputs saved successfully!';
+            statusDiv.style.color = 'green';
+        } else {
+            statusDiv.textContent = data.error || 'Failed to save matrix inputs.';
+            statusDiv.style.color = 'red';
+        }
+    })
+    .catch(err => {
+        console.error('Save error:', err);
+        document.getElementById('save-status-matrix').textContent = 'Save failed';
+    });
+},
+
+    exportVectorAsJson() {
+        const outputText = document.getElementById('vector-output').textContent;
+        const data = parseTextOutputToArray(outputText);
+        exportAsJson(data, 'vector_output.json');
+    },
+
+    exportMatrixAsJson() {
+        const outputText = document.getElementById('matrix-output').textContent;
+        const data = parseTextOutputToArray(outputText);
+        exportAsJson(data, 'matrix_output.json');
+    },
+
+    exportTreeAsJson() {
+        const outputText = document.getElementById('tree-output').textContent;
+        const lines = outputText.trim().split('\n');
+        exportAsJson(lines, 'tree_output.json');
+    },
+
+    exportStringAsJson() {
+        const outputText = document.getElementById('string-output').textContent;
+        const lines = outputText.trim().split('\n');
+        exportAsJson(lines, 'string_output.json');
+    },
+
+    exportGraphAsJson() {
+        const outputText = document.getElementById('graph-output').textContent;
+        const items = outputText.trim().split(/\s+/);
+        exportAsJson(items, 'graph_output.json');
+    },
+
+    exportNumbersAsJson() {
+        const outputText = document.getElementById('number-output').textContent;
+        const numbers = outputText.trim().split(',').map(Number);
+        exportAsJson(numbers, 'numbers_output.json');
     },
 
 
@@ -193,8 +392,7 @@ export const mainController = {
 
         });
     },
-    logout()
-    {
+    logout() {
         window.location.href = '../config/logout.php';
     },
 
@@ -207,7 +405,7 @@ export const mainController = {
         const minGroup = document.getElementById('matrix-min');
 
 
-        if (!mapSelect || !signGroup || !parityGroup || !uniqueGroup || !maxGroup|| !minGroup) {
+        if (!mapSelect || !signGroup || !parityGroup || !uniqueGroup || !maxGroup || !minGroup) {
             console.warn('Matrix input elements not found.');
             return;
         }
@@ -219,7 +417,7 @@ export const mainController = {
             uniqueGroup.style.display = shouldHide ? 'none' : 'inline-block';
             minGroup.style.display = shouldHide ? 'none' : 'inline-block';
             maxGroup.style.display = shouldHide ? 'none' : 'inline-block';
-           
+
             ['matrix-sign', 'matrix-parity', 'matrix-unique', 'matrix-min', 'matrix-max'].forEach(id => {
                 const label = document.querySelector(`label[for="${id}"]`);
                 if (label) label.style.display = shouldHide ? 'none' : 'inline-block';

@@ -47,7 +47,6 @@
     <option value="none">None</option>
     <option value="arithmetic">Arithmetic</option>
     <option value="geometric">Geometric</option>
-    <option value="palindrome">Palindrome</option>
 </select><br><br>
 
 <label for="step-size">Step:</label>
@@ -64,4 +63,9 @@
 <input type="checkbox" id="edge-all-equal"> All Equal Values<br><br>
 
 <button onclick="mainController.generateNumbers()">Generate</button>
+<button onclick="mainController.exportNumbersAsJson()">Export as JSON</button>
+
 <div id="number-output" style="margin-top: 20px;"></div>
+
+<button onclick="mainController.saveNumberInputs()">Save Inputs</button>
+<div id="save-status" style="margin-top: 10px;"></div>
