@@ -272,6 +272,40 @@ saveVectorInputs() {
     });
 },
 
+saveMatrixInputs() {
+    const payload = {
+        rows: parseInt(document.getElementById('matrix-rows').value),
+        cols: parseInt(document.getElementById('matrix-cols').value),
+        map: document.getElementById('matrix-map').value,
+        min: parseFloat(document.getElementById('matrix-min').value),
+        max: parseFloat(document.getElementById('matrix-max').value),
+        parity: document.getElementById('matrix-parity').value || null,
+        unique: document.getElementById('matrix-unique').value === 'yes',
+        sign: document.getElementById('matrix-sign').value || null
+    };
+
+    fetch('../config/save-matrix-inputs.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        const statusDiv = document.getElementById('save-status-matrix');
+        if (data.success) {
+            statusDiv.textContent = 'Matrix inputs saved successfully!';
+            statusDiv.style.color = 'green';
+        } else {
+            statusDiv.textContent = data.error || 'Failed to save matrix inputs.';
+            statusDiv.style.color = 'red';
+        }
+    })
+    .catch(err => {
+        console.error('Save error:', err);
+        document.getElementById('save-status-matrix').textContent = 'Save failed';
+    });
+},
+
     exportVectorAsJson() {
         const outputText = document.getElementById('vector-output').textContent;
         const data = parseTextOutputToArray(outputText);

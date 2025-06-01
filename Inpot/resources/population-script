@@ -71,3 +71,17 @@ CREATE TABLE vector_generator_inputs (
 
                                          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+/
+CREATE TABLE matrix_generator_inputs (
+                                 id SERIAL PRIMARY KEY,
+                                 user_id INTEGER NOT NULL,
+                                 matrix_rows INTEGER NOT NULL,
+                                 matrix_cols INTEGER NOT NULL,
+                                 matrix_map BOOLEAN NOT NULL,
+                                 matrix_min INTEGER NOT NULL,
+                                 matrix_max INTEGER NOT NULL,
+                                 matrix_parity VARCHAR(10),
+                                 matrix_unique BOOLEAN NOT NULL,
+                                 matrix_sign VARCHAR(5),
+                                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
