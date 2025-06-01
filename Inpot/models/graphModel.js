@@ -1,5 +1,4 @@
-
-function isConnected(matrix, oriented) {
+function isConnected(matrix) {
     const n = matrix.length;
     const visited = new Array(n).fill(false);
     function dfs(node) {
@@ -19,6 +18,10 @@ export const graphModel = {
        
         if (connected === 'yes' && edge < node - 1) {
             return `Error: Cannot generate a connected graph with fewer than ${node - 1} edges.`;
+        }
+      
+        if (connected === 'no' && edge > node * (node - 2) / 2) {
+            return `Error: Cannot generate a disconnected graph with more than ${node * (node - 2) / 2} edges.`;
         }
         
         const matrix = Array.from({ length: node }, () => new Array(node).fill(0));
@@ -67,6 +70,7 @@ export const graphModel = {
             }
         }
         
+        // Randomize edge order.
         for (let i = possibleEdges.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [possibleEdges[i], possibleEdges[j]] = [possibleEdges[j], possibleEdges[i]];
@@ -77,7 +81,7 @@ export const graphModel = {
         for (let k = 0; k < numEdges; k++) {
             const [i, j] = possibleEdges[k];
             let weight;
-            if (weighted === true) {
+            if (weighted == 'yes') {
                 if (isNaN(min_weight) || isNaN(max_weight)) {
                     weight = Math.floor(Math.random() * 100) + 1;
                 } else {
@@ -92,23 +96,46 @@ export const graphModel = {
             }
         }
         
-        if (connected == 'yes' && !isConnected(matrix)) {
-            return graphModel.generateGraph(node, edge, oriented, connected, bipartit, weighted, min_weight, max_weight, format);
+    
+        if (connected === 'yes') {
+            if (!isConnected(matrix)) {
+                return graphModel.generateGraph(node, edge, oriented, connected, bipartit, weighted, min_weight, max_weight, format);
+            }
+        } else if (connected === 'no') {
+            if (isConnected(matrix)) {
+                return graphModel.generateGraph(node, edge, oriented, connected, bipartit, weighted, min_weight, max_weight, format);
+            }
         }
         
         if (format === 'edge') {
             let result = "";
-            for (let i = 0; i < node; i++) {
-                let edges = [];
-                for (let j = 0; j < node; j++) {
-                    if (matrix[i][j] !== 0) {
-                        edges.push(j + 1);
+            if (oriented === 'yes') {
+                for (let i = 0; i < node; i++) {
+                    for (let j = 0; j < node; j++) {
+                        if (matrix[i][j] !== 0) {
+                            if (weighted === 'yes') {
+                                result += `${i + 1} ${j + 1} ${matrix[i][j]}\n`;
+                            } else {
+                                result += `${i + 1} ${j + 1}\n`;
+                            }
+                        }
                     }
                 }
-                result += `node ${i + 1}: ${edges.join(' ')}\n`;
+            } else {
+                for (let i = 0; i < node; i++) {
+                    for (let j = i + 1; j < node; j++) {
+                        if (matrix[i][j] !== 0) {
+                            if (weighted === 'yes') {
+                                result += `${i + 1} ${j + 1} ${matrix[i][j]}\n`;
+                            } else {
+                                result += `${i + 1} ${j + 1}\n`;
+                            }
+                        }
+                    }
+                }
             }
             return result;
-        } else {  
+        } else {
             return matrix.map(row => row.join(' ')).join('\n');
         }
     }

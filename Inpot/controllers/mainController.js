@@ -129,22 +129,31 @@ export const mainController = {
 
         const graphs = graphModel.generateGraph(node, edge, oriented, connected, bipartit, weighted, min_weight, max_weight, format);
         window.currentGraphResult = graphs;
+        window.currentGraphOriented = (oriented == 'yes');
         document.getElementById('graph-output').textContent = graphs;
 
 
     },
 
     generateTree() {
-
         const node = parseInt(document.getElementById('tree-nodes').value);
-        const oriented = document.getElementById('tree-oriented').value;
-        const output_format = document.getElementById('tree-format').value;
-
-        const trees = treeModel.generateTree(node, oriented, output_format);
-
-        document.getElementById('tree-output').textContent=trees.join('\n');
-
-
+        const binary = document.getElementById('tree-binary').value;
+        const levels = parseInt(document.getElementById('tree-lvl').value);
+        const weighted = document.getElementById('tree-weighted').value;
+        const min_weight = parseInt(document.getElementById('graph-min-weight').value);
+        const max_weight = parseInt(document.getElementById('graph-max-weight').value);
+        const format = document.getElementById('tree-format').value;     
+        
+        try {
+            const trees = treeModel.generateTree(node, binary, levels, weighted, min_weight, max_weight, format);
+            if (Array.isArray(trees)) {
+                document.getElementById('tree-output').textContent = trees.join("\n");
+            } else {
+                document.getElementById('tree-output').textContent = trees;
+            }
+        } catch (e) {
+            document.getElementById('tree-output').textContent = "Error: " + e.message;
+        }
     },
 
 
@@ -224,15 +233,21 @@ export const mainController = {
     setupGraphListeners() {
         const bipartitSelect = document.getElementById('graph-bipartit');
         const orientedSelect = document.getElementById('graph-oriented');
+        const weightedSelect = document.getElementById('graph-weighted');
+        const minWeightInput = document.getElementById('graph-min-weight');
+        const maxWeightInput = document.getElementById('graph-max-weight');
+       
 
-        if (!bipartitSelect || !orientedSelect) {
-            console.warn('Graph component elements not found. Make sure the graph component is loaded before calling setupGraphListeners.');
+        if (!bipartitSelect || !orientedSelect || !weightedSelect || !minWeightInput || !maxWeightInput) {
+            console.warn('One or more Graph component elements not found.');
             return;
         }
 
         function toggleGraphFields() {
             const orientedLabel = document.querySelector('label[for="graph-oriented"]');
             const bipartitLabel = document.querySelector('label[for="graph-bipartit"]');
+            const minWeightLabel = document.querySelector('label[for="graph-min-weight"]');
+            const maxWeightLabel = document.querySelector('label[for="graph-max-weight"]');
 
             if (bipartitSelect.value === 'yes') {
                 orientedSelect.style.display = 'none';
@@ -257,10 +272,36 @@ export const mainController = {
                     bipartitLabel.style.display = 'inline-block';
                 }
             }
+
+
+            if (weightedSelect.value === 'yes') {
+                minWeightInput.style.display = 'inline-block';
+                maxWeightInput.style.display = 'inline-block';
+                if (minWeightLabel) {
+                    minWeightLabel.style.display = 'inline-block';
+                }
+                if (maxWeightLabel) {
+                    maxWeightLabel.style.display = 'inline-block';
+                }
+            } else {
+                minWeightInput.style.display = 'none';
+                maxWeightInput.style.display = 'none';
+                if (minWeightLabel) {
+                    minWeightLabel.style.display = 'none';
+                }
+                if (maxWeightLabel) {
+                    maxWeightLabel.style.display = 'none';
+                }
+            }
+    
+
         }
 
+            
         bipartitSelect.addEventListener('change', toggleGraphFields);
         orientedSelect.addEventListener('change', toggleGraphFields);
+        weightedSelect.addEventListener('change', toggleGraphFields);
+
         toggleGraphFields();
     },
 
