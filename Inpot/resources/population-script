@@ -7,3 +7,31 @@ CREATE TABLE users (
     role VARCHAR(20) DEFAULT 'user' CHECK (role IN ('user', 'admin')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+/
+CREATE TABLE number_generator_inputs (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    min_value INTEGER,
+    max_value INTEGER,
+    count INTEGER,
+    parity VARCHAR(10),        
+    sign VARCHAR(10),           
+    sorted VARCHAR(50),
+    data_type VARCHAR(20),     
+    unique_numbers BOOLEAN,
+    pattern VARCHAR(50),      
+    step INTEGER,
+
+    include_zero BOOLEAN,
+    include_min BOOLEAN,
+    include_max BOOLEAN,
+
+    edge_empty_input BOOLEAN,
+    edge_single_element BOOLEAN,
+    edge_all_equal BOOLEAN,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
