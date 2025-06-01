@@ -236,6 +236,41 @@ export const mainController = {
         document.getElementById('save-status-string').textContent = 'Save failed';
     });
 },
+saveVectorInputs() {
+    const payload = {
+        length: parseInt(document.getElementById('vector-length').value),
+        min: parseFloat(document.getElementById('vector-min').value),
+        max: parseFloat(document.getElementById('vector-max').value),
+        parity: document.getElementById('vector-parity').value || null,
+        sign: document.getElementById('vector-sign').value || null,
+        type: document.getElementById('vector-type').value || null,
+        unique: document.getElementById('vector-unique').value === 'yes',
+        palindrome: document.getElementById('vector-palindrome').value === 'yes',
+        line: parseInt(document.getElementById('vector-line').value),
+        sorted: document.getElementById('vector-sorted').value || null
+    };
+
+    fetch('../config/save-vector-inputs.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        const statusDiv = document.getElementById('save-status-vector');
+        if (data.success) {
+            statusDiv.textContent = 'Vector inputs saved successfully!';
+            statusDiv.style.color = 'green';
+        } else {
+            statusDiv.textContent = data.error || 'Failed to save vector inputs.';
+            statusDiv.style.color = 'red';
+        }
+    })
+    .catch(err => {
+        console.error('Save error:', err);
+        document.getElementById('save-status-vector').textContent = 'Save failed';
+    });
+},
 
     exportVectorAsJson() {
         const outputText = document.getElementById('vector-output').textContent;

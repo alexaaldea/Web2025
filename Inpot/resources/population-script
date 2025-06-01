@@ -50,3 +50,24 @@ CREATE TABLE string_generator_inputs (
     string_count INT,                         
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE vector_generator_inputs (
+                                         id SERIAL PRIMARY KEY,
+                                         user_id INT NOT NULL,
+                                         vector_length INT,
+                                         vector_min NUMERIC,
+                                         vector_max NUMERIC,
+
+                                         vector_parity VARCHAR(10),
+                                         vector_sign VARCHAR(5),
+
+                                         vector_type VARCHAR(10),
+                                         vector_unique BOOLEAN,
+                                         vector_palindrome BOOLEAN,
+
+                                         vector_line INT,
+
+                                         vector_sorted VARCHAR(15),
+
+                                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
