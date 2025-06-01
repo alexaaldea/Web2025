@@ -202,6 +202,40 @@ export const mainController = {
     });
 },
 
+ saveStringInputs() {
+    const payload = {
+        stringMin: parseInt(document.getElementById('string-min').value),
+        stringMax: parseInt(document.getElementById('string-max').value),
+        sameLength: parseInt(document.getElementById('same-length').value),
+        includePrefix: document.getElementById('include-prefix').value || null,
+        includeSuffix: document.getElementById('include-suffix').value || null,
+        sorting: document.getElementById('sorting').value || null,
+        stringUnique: document.getElementById('string-unique').checked,
+        stringLetter: document.getElementById('string-letter').value || null,
+        stringCount: parseInt(document.getElementById('string-count').value)
+    };
+
+    fetch('../config/save-string-inputs.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        const statusDiv = document.getElementById('save-status-string');
+        if (data.success) {
+            statusDiv.textContent = 'Inputs saved successfully!';
+            statusDiv.style.color = 'green';
+        } else {
+            statusDiv.textContent = data.error || 'Failed to save inputs.';
+            statusDiv.style.color = 'red';
+        }
+    })
+    .catch(err => {
+        console.error('Save error:', err);
+        document.getElementById('save-status-string').textContent = 'Save failed';
+    });
+},
 
     exportVectorAsJson() {
         const outputText = document.getElementById('vector-output').textContent;
