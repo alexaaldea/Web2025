@@ -5,10 +5,6 @@ require_once __DIR__ . '/db.php';
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-ini_set('display_errors', 0);   // Do not output errors to client
-ini_set('log_errors', 1);       // Log errors to server log
-ini_set('error_log', __DIR__ . '/error.log'); // Customize log file path
-error_reporting(E_ALL);
 
 header('Content-Type: application/json');
 
@@ -69,6 +65,7 @@ $stmt = $pdo->prepare("INSERT INTO string_generator_inputs (
     :sorting, :string_unique, :string_letter, :string_count
 )");
 
+$stringUnique = $data['stringUnique'] ?? null;
 try {
     $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
     $stmt->bindValue(':string_min', isset($data['stringMin']) ? $data['stringMin'] : null, PDO::PARAM_INT);
@@ -77,7 +74,7 @@ try {
     $stmt->bindValue(':include_prefix', $data['includePrefix'] ?? null, PDO::PARAM_STR);
     $stmt->bindValue(':include_suffix', $data['includeSuffix'] ?? null, PDO::PARAM_STR);
     $stmt->bindValue(':sorting', $data['sorting'] ?? null, PDO::PARAM_STR);
-    $stmt->bindValue(':string_unique', toBoolOrNull($data['stringUnique']), is_null(toBoolOrNull($data['stringUnique'])) ? PDO::PARAM_NULL : PDO::PARAM_BOOL);
+    $stmt->bindValue(':string_unique', toBoolOrNull($stringUnique), is_null(toBoolOrNull($stringUnique)) ? PDO::PARAM_NULL : PDO::PARAM_BOOL);
     $stmt->bindValue(':string_letter', $data['stringLetter'] ?? null, PDO::PARAM_STR);
     $stmt->bindValue(':string_count', isset($data['stringCount']) ? $data['stringCount'] : null, PDO::PARAM_INT);
 
