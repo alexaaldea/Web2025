@@ -1,4 +1,4 @@
-  <h3>Graph Generator</h3><br>
+<h3>Graph Generator</h3><br>
 
     <label for="graph-nodes">Number of nodes:</label>
     <input type="number" id="graph-nodes" placeholder="node number"><br><br>
@@ -43,5 +43,6 @@
     </select><br><br>
 
     <button onclick="mainController.generateGraph()">Generate</button>
+    <button onclick="mainController.exportGraphSVG()">Export SVG</button>
 
     <div id="graph-output" style="margin-top: 20px; white-space: pre-wrap;"></div>

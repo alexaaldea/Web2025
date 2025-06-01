@@ -4,6 +4,7 @@ import { numberModel } from '../models/numberModel.js';
 import { stringModel } from '../models/stringModel.js';
 import { treeModel } from '../models/treeModel.js';
 import { graphModel } from '../models/graphModel.js';
+import { createGraphSVG } from '../models/create_svg.js';
 
 export const mainController = {
     showContainer(containerId) {
@@ -127,7 +128,8 @@ export const mainController = {
 
 
         const graphs = graphModel.generateGraph(node, edge, oriented, connected, bipartit, weighted, min_weight, max_weight, format);
-        document.getElementById('graph-output').textContent = graphs.join('\n');
+        window.currentGraphResult = graphs;
+        document.getElementById('graph-output').textContent = graphs;
 
 
     },
@@ -173,6 +175,10 @@ export const mainController = {
                     if (component === 'matrix') {
                         this.setupMatrixMapListener();
                     }
+                    if (component === 'graph') {
+                        document.getElementById(component).innerHTML = html;
+                        mainController.setupGraphListeners();
+                    }
                 })
                 .catch(error => console.error(`Error loading ${component}:`, error));
 
@@ -214,6 +220,49 @@ export const mainController = {
         mapSelect.addEventListener('change', toggleVisibility);
         toggleVisibility();
     },
+        
+    setupGraphListeners() {
+        const bipartitSelect = document.getElementById('graph-bipartit');
+        const orientedSelect = document.getElementById('graph-oriented');
+
+        if (!bipartitSelect || !orientedSelect) {
+            console.warn('Graph component elements not found. Make sure the graph component is loaded before calling setupGraphListeners.');
+            return;
+        }
+
+        function toggleGraphFields() {
+            const orientedLabel = document.querySelector('label[for="graph-oriented"]');
+            const bipartitLabel = document.querySelector('label[for="graph-bipartit"]');
+
+            if (bipartitSelect.value === 'yes') {
+                orientedSelect.style.display = 'none';
+                if (orientedLabel) {
+                    orientedLabel.style.display = 'none';
+                }
+            } else {
+                orientedSelect.style.display = 'inline-block';
+                if (orientedLabel) {
+                    orientedLabel.style.display = 'inline-block';
+                }
+            }
+
+            if (orientedSelect.value === 'yes') {
+                bipartitSelect.style.display = 'none';
+                if (bipartitLabel) {
+                    bipartitLabel.style.display = 'none';
+                }
+            } else {
+                bipartitSelect.style.display = 'inline-block';
+                if (bipartitLabel) {
+                    bipartitLabel.style.display = 'inline-block';
+                }
+            }
+        }
+
+        bipartitSelect.addEventListener('change', toggleGraphFields);
+        orientedSelect.addEventListener('change', toggleGraphFields);
+        toggleGraphFields();
+    },
 
 
     addNavigationListeners() {
@@ -226,6 +275,17 @@ export const mainController = {
             });
         });
 
+    },
+        exportGraphSVG() {
+    
+        const graphData = window.currentGraphResult;
+        if (!graphData) {
+            console.warn('No graph generated yet.');
+            return;
+        }
+        const svgOutput = createGraphSVG(graphData);
+        
+        document.getElementById('graph-output').innerHTML = svgOutput;
     },
 
     init() {
