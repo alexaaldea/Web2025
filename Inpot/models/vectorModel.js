@@ -18,5 +18,10 @@ export const vectorModel = {
         else
         numbers=numberModel.generateNumbers(min, max, elem, parity, sign, sorted, unique, type, 'none', false, false, false, false, false, false, 1);
         return numbers;
-    }
+    },
+    
+    generateVectorJson(elem, min, max, parity, sign, sorted, unique, type, palindrome, line) {
+        const vector = this.generateVector(elem, min, max, parity, sign, sorted, unique, type, palindrome, line);
+        return JSON.stringify(vector);
+}
 };
