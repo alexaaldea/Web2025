@@ -35,3 +35,18 @@ CREATE TABLE number_generator_inputs (
 
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+/
+CREATE TABLE string_generator_inputs (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,                     
+    string_min INT,                          
+    string_max INT,                           
+    same_length INT,                         
+    include_prefix VARCHAR(255),              
+    include_suffix VARCHAR(255),            
+    sorting VARCHAR(20),                      
+    string_unique BOOLEAN,                    
+    string_letter VARCHAR(255),               
+    string_count INT,                         
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
