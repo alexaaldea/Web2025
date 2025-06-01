@@ -108,9 +108,9 @@ export const mainController = {
         } else {
             output = vect.join(' ');
         }
-
         document.getElementById('vector-output').textContent = output;
     },
+
 
     generateMatrix() {
 
@@ -159,6 +159,48 @@ export const mainController = {
 
 
     },
+
+    saveNumberInputs() {
+    const payload = {
+        min: parseFloat(document.getElementById('number-min').value),
+        max: parseFloat(document.getElementById('number-max').value),
+        count: parseInt(document.getElementById('number-count').value),
+        parity: document.getElementById('number-parity').value,
+        sign: document.getElementById('number-sign').value,
+        sorted: document.getElementById('number-sorted').value,
+        type: document.getElementById('number-type').value,
+        unique: document.getElementById('number-unique').value === 'yes',
+        pattern: document.getElementById('number-pattern').value,
+        step: parseFloat(document.getElementById('step-size').value),
+        includeZero: document.getElementById('include-zero').checked,
+        includeMin: document.getElementById('include-min').checked,
+        includeMax: document.getElementById('include-max').checked,
+        edgeEmpty: document.getElementById('edge-empty').checked,
+        edgeSingle: document.getElementById('edge-single').checked,
+        edgeAllEqual: document.getElementById('edge-all-equal').checked
+    };
+
+    fetch('../config/save-number-inputs.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(response => response.json())
+    .then(data => {
+        const statusDiv = document.getElementById('save-status');
+        if (data.success) {
+            statusDiv.textContent = 'Inputs saved successfully!';
+            statusDiv.style.color = 'green';
+        } else {
+            statusDiv.textContent = data.error || 'Failed to save inputs.';
+            statusDiv.style.color = 'red';
+        }
+    })
+    .catch(err => {
+        console.error('Save error:', err);
+        document.getElementById('save-status').textContent = 'Save failed';
+    });
+},
 
 
     exportVectorAsJson() {
