@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Generated Inputs History</title>
+  <link rel="stylesheet" href="../../css/history.css">
+</head>
+<body>
+  <h1>Your Generated Inputs</h1>
+
+  <div id="history-container"></div>
+
+  <script>
+    const mockHistoryData = {
+      number: [
+        {
+          id: 1,
+          created_at: '2025-06-01 12:00',
+          input: 'Min: 1, Max: 100, Count: 5, Parity: even, Unique: true'
+        }
+      ],
+      string: [
+        {
+          id: 2,
+          created_at: '2025-06-01 12:30',
+          input: 'MinLen: 3, MaxLen: 8, Count: 10, Prefix: "ab", Unique: true'
+        }
+      ],
+      vector: [
+        {
+          id: 3,
+          created_at: '2025-06-01 13:00',
+          input: 'Length: 6, Min: 0, Max: 50, Type: int, Sorted: ascending'
+        }
+      ],
+      matrix: [
+        {
+          id: 4,
+          created_at: '2025-06-01 14:00',
+          input: '3x3, Min: 1, Max: 10, Parity: odd, Unique: true'
+        }
+      ],
+      graph: [],
+      tree: []
+    };
+
+    function createTable(sectionTitle, data) {
+      const section = document.createElement('div');
+      section.className = 'section';
+
+      const title = document.createElement('div');
+      title.className = 'section-title';
+      title.textContent = sectionTitle;
+      section.appendChild(title);
+
+      if (data.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'empty';
+        empty.textContent = 'No inputs generated yet.';
+        section.appendChild(empty);
+      } else {
+        const table = document.createElement('table');
+        table.className = 'history-table';
+
+        const thead = document.createElement('thead');
+        thead.innerHTML = `<tr><th>ID</th><th>Created At</th><th>Input Summary</th></tr>`;
+        table.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+        data.forEach(entry => {
+          const row = document.createElement('tr');
+          row.innerHTML = `<td>${entry.id}</td><td>${entry.created_at}</td><td>${entry.input}</td>`;
+          tbody.appendChild(row);
+        });
+
+        table.appendChild(tbody);
+        section.appendChild(table);
+      }
+
+      return section;
+    }
+
+    function renderHistory(data) {
+      const container = document.getElementById('history-container');
+      container.appendChild(createTable('Number Inputs', data.number));
+      container.appendChild(createTable('String Inputs', data.string));
+      container.appendChild(createTable('Vector Inputs', data.vector));
+      container.appendChild(createTable('Matrix Inputs', data.matrix));
+      container.appendChild(createTable('Graph Inputs', data.graph));
+      container.appendChild(createTable('Tree Inputs', data.tree));
+    }
+
+    renderHistory(mockHistoryData);
+  </script>
+</body>
+</html>
