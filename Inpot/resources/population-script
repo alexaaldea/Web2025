@@ -85,3 +85,67 @@ CREATE TABLE matrix_generator_inputs (
                                  matrix_sign VARCHAR(5),
                                  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+/
+CREATE TABLE graph_generator_inputs (
+                                 id SERIAL PRIMARY KEY,
+                                 user_id INTEGER NOT NULL,
+                                 graph_nodes INTEGER NOT NULL,
+                                 graph_edges INTEGER NOT NULL,
+                                 graph_oriented BOOLEAN NOT NULL,
+                                 graph_connected BOOLEAN NOT NULL,
+                                 graph_bipartit BOOLEAN NOT NULL,
+                                 graph_weighted BOOLEAN NOT NULL,
+                                 graph_min_weight INTEGER,
+                                 graph_min_weight INTEGER,
+                                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+/
+CREATE TABLE tree_generator_inputs (
+                                 id SERIAL PRIMARY KEY,
+                                 user_id INTEGER NOT NULL,
+                                 tree_nodes INTEGER NOT NULL,
+                                 tree_binary BOOLEAN NOT NULL,
+                                 tree-lvl INTEGER NOT NULL,
+                                 tree_weighted BOOLEAN NOT NULL,
+                                 tree_min_weight INTEGER,
+                                 tree_min_weight INTEGER,
+                                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+/
+CREATE OR REPLACE FUNCTION sample_function2() RETURNS TRIGGER AS $$
+DECLARE
+  x integer;
+BEGIN
+    SELECT count(u.email) AS x
+    FROM users u
+    WHERE u.email=new.email;
+
+    if(x==0) THEN
+    BEGIN
+    INSERT INTO users(first_name,last_name,email,password, role, created_at)
+    VALUES(NEW.first_name, NEW.last_name, NEW.email, NEW.password, NEW.role,now());
+    END
+    ELSE
+    --??? AFISEZ IG
+    END IF;  
+
+END;
+$$ LANGUAGE plpgsql;
+/
+CREATE OR REPLACE FUNCTION sample_function1() RETURNS TRIGGER AS $$
+BEGIN
+    -- function logic here
+END;
+$$ LANGUAGE plpgsql;
+/
+CREATE TRIGGER delete_user
+  BEFORE DELETE
+  ON users
+  FOR EACH ROW
+  EXECUTE PROCEDURE sample_function1();
+/
+CREATE TRIGGER insert_user
+  BEFORE INSERT
+  ON users
+  FOR EACH ROW
+  EXECUTE PROCEDURE sample_function2();
