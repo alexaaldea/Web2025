@@ -96,48 +96,92 @@
 
   
   function createStatsTable(stats) {
-    const section = document.createElement('div');
-    section.className = 'section';
+  const section = document.createElement('div');
+  section.className = 'section';
 
-    const title = document.createElement('div');
-    title.className = 'section-title';
-    title.textContent = 'User Statistics';
-    section.appendChild(title);
+  const title = document.createElement('div');
+  title.className = 'section-title';
+  title.textContent = 'User Statistics';
+  section.appendChild(title);
 
-    const table = document.createElement('table');
-    table.className = 'history-table';
+  const table = document.createElement('table');
+  table.className = 'history-table';
 
-    const tbody = document.createElement('tbody');
+  const tbody = document.createElement('tbody');
 
-    const rows = [
-      ['Total Generations', stats.total_generations],
-      ['Number Inputs Count', stats.counts.number],
-      ['String Inputs Count', stats.counts.string],
-      ['Vector Inputs Count', stats.counts.vector],
-      ['Matrix Inputs Count', stats.counts.matrix],
-      ['First Generation Date', stats.first_generation],
-      ['Last Generation Date', stats.last_generation],
-      ['Avg Number Count', stats.averages.number_count],
-      ['Min Number Count', stats.min_max.number_count.min],
-      ['Max Number Count', stats.min_max.number_count.max],
-      ['Avg String Count', stats.averages.string_count],
-      ['Avg Vector Length', stats.averages.vector_length],
-      ['Avg Matrix Size (rows × cols)', `${stats.averages.matrix_rows} × ${stats.averages.matrix_cols}`],
-      ['Unique Input Combinations', stats.diversity.unique_combinations],
-      ['Used `unique_numbers = true`', stats.diversity.unique_numbers_true],
-      ['Used `vector_palindrome = true`', stats.diversity.vector_palindrome_true],
-    ];
 
-    rows.forEach(([label, value]) => {
-      const row = document.createElement('tr');
-      row.innerHTML = `<td><strong>${label}</strong></td><td>${value}</td>`;
-      tbody.appendChild(row);
-    });
+  const rows = [
+    ['Total Generations', stats.total_generations],
 
-    table.appendChild(tbody);
-    section.appendChild(table);
-    return section;
-  }
+    // Counts
+    ['Number Inputs Count', stats.number_count],
+    ['String Inputs Count', stats.string_count],
+    ['Vector Inputs Count', stats.vector_count],
+    ['Matrix Inputs Count', stats.matrix_count],
+
+    // Dates
+    ['First Generation Date', stats.first_generation],
+    ['Last Generation Date', stats.last_generation],
+
+    // Number stats
+    ['Avg Number Count', stats.avg_number_count],
+    ['Min Number Count', stats.min_number_count],
+    ['Max Number Count', stats.max_number_count],
+
+    // String stats
+    ['Avg String Count', stats.avg_string_count],
+    ['Min String Count', stats.min_string_count],
+    ['Max String Count', stats.max_string_count],
+
+    // Vector stats
+    ['Avg Vector Length', stats.avg_vector_length],
+    ['Min Vector Length', stats.min_vector_length],
+    ['Max Vector Length', stats.max_vector_length],
+
+    // Matrix stats
+    ['Avg Matrix Rows', stats.avg_matrix_rows],
+    ['Min Matrix Rows', stats.min_matrix_rows],
+    ['Max Matrix Rows', stats.max_matrix_rows],
+    ['Avg Matrix Columns', stats.avg_matrix_cols],
+    ['Min Matrix Columns', stats.min_matrix_cols],
+    ['Max Matrix Columns', stats.max_matrix_cols],
+
+    // Number combinations and flags
+    ['Unique Number Combinations', stats.unique_number_combinations],
+    ['Number Unique True', stats.number_unique_true],
+    ['Number Edge Empty True', stats.number_edge_empty_true],
+    ['Number Edge Single True', stats.number_edge_single_true],
+    ['Number Edge All Equal True', stats.number_edge_all_equal_true],
+
+    // String combinations and flags
+    ['Unique String Combinations', stats.unique_string_combinations],
+    ['String Unique True', stats.string_unique_true],
+    ['Used Prefix', stats.used_prefix],
+    ['Used Suffix', stats.used_suffix],
+
+    // Vector combinations and flags
+    ['Unique Vector Combinations', stats.unique_vector_combinations],
+    ['Vector Unique True', stats.vector_unique_true],
+    ['Vector Palindrome True', stats.vector_palindrome_true],
+    ['Vector Sorted Used', stats.vector_sorted_used],
+
+    // Matrix combinations and flags
+    ['Unique Matrix Combinations', stats.unique_matrix_combinations],
+    ['Matrix Map True', stats.matrix_map_true],
+    ['Matrix Unique True', stats.matrix_unique_true],
+  ];
+
+  rows.forEach(([label, value]) => {
+    const row = document.createElement('tr');
+    row.innerHTML = `<td><strong>${label}</strong></td><td>${value !== null ? value : 'N/A'}</td>`;
+    tbody.appendChild(row);
+  });
+
+  table.appendChild(tbody);
+  section.appendChild(table);
+  return section;
+}
+
 
   async function loadHistory() {
     try {

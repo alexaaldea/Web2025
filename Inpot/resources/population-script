@@ -97,7 +97,6 @@ CREATE TABLE graph_generator_inputs (
                                  graph_bipartit BOOLEAN NOT NULL,
                                  graph_weighted BOOLEAN NOT NULL,
                                  graph_min_weight INTEGER,
-                                 graph_min_weight INTEGER,
                                  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 /
@@ -106,9 +105,8 @@ CREATE TABLE tree_generator_inputs (
                                  user_id INTEGER NOT NULL,
                                  tree_nodes INTEGER NOT NULL,
                                  tree_binary BOOLEAN NOT NULL,
-                                 tree-lvl INTEGER NOT NULL,
+                                 tree_lvl INTEGER NOT NULL,
                                  tree_weighted BOOLEAN NOT NULL,
-                                 tree_min_weight INTEGER,
                                  tree_min_weight INTEGER,
                                  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
