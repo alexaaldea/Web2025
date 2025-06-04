@@ -56,14 +56,14 @@ DO $$
 
                 INSERT INTO graph_generator_inputs (
                     user_id, graph_nodes, graph_edges, graph_oriented, graph_connected, graph_bipartit,
-                    graph_weighted, graph_min_weight, created_at)
+                    graph_weighted, graph_min_weight, graph_max_weight, created_at)
                 VALUES (
-                           v_user_id, 5, 7, true, true, false, true, 1, now());
+                           v_user_id, 5, 7, true, true, false, true, 1, 3, now());
 
                 INSERT INTO tree_generator_inputs (
-                    user_id, tree_nodes, tree_binary, tree_lvl, tree_weighted, tree_min_weight, created_at)
+                    user_id, tree_nodes, tree_binary, tree_lvl, tree_weighted, tree_min_weight,tree_max_weight, created_at)
                 VALUES (
-                           v_user_id, 7, true, 3, false, 1, now());
+                           v_user_id, 7, true, 3, false, 1,3, now());
             END LOOP;
 
         RAISE NOTICE 'Sample data insertion completed.';

@@ -22,19 +22,19 @@ export const mainController = {
         fetch('../config/verify-jwt.php')
             .then(response => {
                 if (!response.ok) {
-                    window.location.href = 'login.php';
+                    window.location.href = 'login.html';
                     throw new Error('Invalid token');
                 }
                 return response.json();
             })
             .then(data => {
-                if (data.message !== 'valid') {
-                    window.location.href = 'login.php';
+                if (data.message != 'valid') {
+                    window.location.href = 'login.html';
                 }
             })
             .catch(error => {
                 console.error('JWT verification failed:', error);
-                window.location.href = 'login.php';
+                window.location.href = 'login.html';
             });
     },
 

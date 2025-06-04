@@ -104,6 +104,7 @@ CREATE TABLE graph_generator_inputs (
     graph_bipartit BOOLEAN NOT NULL,
     graph_weighted BOOLEAN NOT NULL,
     graph_min_weight INTEGER,
+    graph_max_weight INTEGER,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
@@ -117,6 +118,7 @@ CREATE TABLE tree_generator_inputs (
     tree_lvl INTEGER NOT NULL,
     tree_weighted BOOLEAN NOT NULL,
     tree_min_weight INTEGER,
+    tree_max_weight INTEGER,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );

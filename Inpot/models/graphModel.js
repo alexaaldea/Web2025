@@ -19,6 +19,10 @@ export const graphModel = {
         if (connected === 'yes' && edge < node - 1) {
             return `Error: Cannot generate a connected graph with fewer than ${node - 1} edges.`;
         }
+
+        if ( edge > (node*(node - 1))/2) {
+            return `Error: Cannot generate a graph with more than ${((node - 1)*node)/2} edges.`;
+        }
       
         if (connected === 'no' && edge > node * (node - 2) / 2) {
             return `Error: Cannot generate a disconnected graph with more than ${node * (node - 2) / 2} edges.`;
