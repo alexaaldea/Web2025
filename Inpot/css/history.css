@@ -37,3 +37,15 @@ h1 {
   color: #777;
   font-style: italic;
 }
+
+.delete-btn {
+      background-color: #e74c3c;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .delete-btn:hover {
+      background-color: #c0392b;
+    }
