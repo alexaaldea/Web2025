@@ -12,6 +12,7 @@
                 }
             }
         } catch (error) {
+            window.location.href = '../views/login.html';
             console.error('Token verification failed:', error);
         }
     }
