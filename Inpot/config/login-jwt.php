@@ -11,7 +11,7 @@ $password = $_POST['pwd'] ?? '';
 
 if (!$email || !$password) {
     http_response_code(400);
-    echo 'Email and password required.';
+    echo json_encode(['error' => 'Email and password required.']);
     exit;
 }
 
@@ -21,7 +21,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$user || !password_verify($password, $user['password'])) {
     http_response_code(401);
-    echo 'Invalid email or password.';
+    echo json_encode(['error' => 'Invalid email or password.']);
     exit;
 }
 
@@ -38,7 +38,6 @@ $jwt = JWT::encode($payload, $key, 'HS256');
 
 setcookie('jwt', $jwt, time() + 60 * 60 * 24 * 15, "/");
 
-echo $jwt;
+echo json_encode(['token' => $jwt]);
 exit;
-
 ?>

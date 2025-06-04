@@ -8,7 +8,7 @@
                 const data = await response.json();
                 if (data.message === 'valid') {
                     window.location.href = '../views/main.html';
-                    return; 
+                    return;
                 }
             }
         } catch (error) {
@@ -17,7 +17,7 @@
         }
     }
 })();
- 
+
 const loginController = {
     init() {
         const toggleLink = document.getElementById('toggle-form');
@@ -25,17 +25,18 @@ const loginController = {
         const formTitle = document.getElementById('form-title');
         const loginButton = document.getElementById('login');
         const formLabel = document.getElementById('form-label');
-
-        const firstName = document.getElementById('first-name');
-        const lastName = document.getElementById('last-name');
+        const firstNameField = document.getElementById('first-name');
+        const lastNameField = document.getElementById('last-name');
 
         let isSignup = false;
 
-        firstName.disabled = true;
-        lastName.disabled = true;
-        firstName.removeAttribute('required');
-        lastName.removeAttribute('required');
+       
+        firstNameField.disabled = true;
+        lastNameField.disabled = true;
+        firstNameField.removeAttribute('required');
+        lastNameField.removeAttribute('required');
 
+      
         toggleLink.addEventListener('click', (e) => {
             e.preventDefault();
             isSignup = !isSignup;
@@ -47,15 +48,15 @@ const loginController = {
             toggleLink.innerHTML = isSignup ? 'Already have an account? <br><strong> Login now!</strong>' : "Don't have an account? <br><strong> Register now! </strong>";
 
             if (isSignup) {
-                firstName.disabled = false;
-                lastName.disabled = false;
-                firstName.setAttribute('required', 'required');
-                lastName.setAttribute('required', 'required');
+                firstNameField.disabled = false;
+                lastNameField.disabled = false;
+                firstNameField.setAttribute('required', 'required');
+                lastNameField.setAttribute('required', 'required');
             } else {
-                firstName.removeAttribute('required');
-                lastName.removeAttribute('required');
-                firstName.disabled = true;
-                lastName.disabled = true;
+                firstNameField.removeAttribute('required');
+                lastNameField.removeAttribute('required');
+                firstNameField.disabled = true;
+                lastNameField.disabled = true;
             }
         });
 
@@ -82,12 +83,15 @@ const loginController = {
                     method: 'POST',
                     body: formData
                 });
-                const result = await response.text();
+             
+                const result = await response.json();
                 if (response.ok) {
                     if (!isSignup)
                         window.location.href = '../views/main.html';
                     else
                         window.location.href = '../views/login.html';
+                } else {
+                    alert(result.error);
                 }
             } catch (error) {
                 alert('Error: ' + error);

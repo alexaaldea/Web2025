@@ -1,5 +1,4 @@
 <?php
-
 require_once __DIR__ . '/db.php';
 
 $email = $_POST['email'] ?? '';
@@ -9,7 +8,7 @@ $last_name = $_POST['last-name'] ?? '';
 
 if (!$email || !$password || !$first_name || !$last_name) {
     http_response_code(400);
-    echo 'All fields are required.';
+    echo json_encode(['error' => 'All fields are required.']);
     exit;
 }
 
@@ -23,15 +22,9 @@ try {
         'email' => $email,
         'password' => $hashed_password
     ]);
-    echo 'User registered successfully!';
+    echo json_encode(['success' => 'User registered successfully!']);
 } catch (PDOException $e) {
-    http_response_code(500);
-    echo 'Database error: ' . $e->getMessage() . "\n";
-    echo 'Input: ' . json_encode([
-        'first_name' => $first_name,
-        'last_name' => $last_name,
-        'email' => $email,
-        'password' => $hashed_password
-    ]);
+        http_response_code(500);
+        echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
 }
 ?>
