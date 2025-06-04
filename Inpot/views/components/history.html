@@ -93,6 +93,69 @@
     }
 
     loadHistory();
+
+  
+  function createStatsTable(stats) {
+    const section = document.createElement('div');
+    section.className = 'section';
+
+    const title = document.createElement('div');
+    title.className = 'section-title';
+    title.textContent = 'User Statistics';
+    section.appendChild(title);
+
+    const table = document.createElement('table');
+    table.className = 'history-table';
+
+    const tbody = document.createElement('tbody');
+
+    const rows = [
+      ['Total Generations', stats.total_generations],
+      ['Number Inputs Count', stats.counts.number],
+      ['String Inputs Count', stats.counts.string],
+      ['Vector Inputs Count', stats.counts.vector],
+      ['Matrix Inputs Count', stats.counts.matrix],
+      ['First Generation Date', stats.first_generation],
+      ['Last Generation Date', stats.last_generation],
+      ['Avg Number Count', stats.averages.number_count],
+      ['Min Number Count', stats.min_max.number_count.min],
+      ['Max Number Count', stats.min_max.number_count.max],
+      ['Avg String Count', stats.averages.string_count],
+      ['Avg Vector Length', stats.averages.vector_length],
+      ['Avg Matrix Size (rows × cols)', `${stats.averages.matrix_rows} × ${stats.averages.matrix_cols}`],
+      ['Unique Input Combinations', stats.diversity.unique_combinations],
+      ['Used `unique_numbers = true`', stats.diversity.unique_numbers_true],
+      ['Used `vector_palindrome = true`', stats.diversity.vector_palindrome_true],
+    ];
+
+    rows.forEach(([label, value]) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td><strong>${label}</strong></td><td>${value}</td>`;
+      tbody.appendChild(row);
+    });
+
+    table.appendChild(tbody);
+    section.appendChild(table);
+    return section;
+  }
+
+  async function loadHistory() {
+    try {
+      const response = await fetch('/Web2025/Inpot/config/history.php');
+      if (!response.ok) throw new Error('Failed to fetch history');
+      const historyData = await response.json();
+      renderHistory(historyData);
+
+      const statsResponse = await fetch('/Web2025/Inpot/config/user_stats.php');
+      if (!statsResponse.ok) throw new Error('Failed to fetch stats');
+      const statsData = await statsResponse.json();
+      document.getElementById('history-container').appendChild(createStatsTable(statsData));
+    } catch (error) {
+      const container = document.getElementById('history-container');
+      container.innerHTML += `<div class="error">Error loading stats: ${error.message}</div>`;
+    }
+  }
+
   </script>
 </body>
 </html>
