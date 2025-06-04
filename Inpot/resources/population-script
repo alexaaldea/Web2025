@@ -18,70 +18,67 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-/
+
 CREATE TABLE number_generator_inputs (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     min_value INTEGER,
     max_value INTEGER,
     count INTEGER,
-    parity VARCHAR(10),        
-    sign VARCHAR(10),           
+    parity VARCHAR(10),
+    sign VARCHAR(10),
     sorted VARCHAR(50),
-    data_type VARCHAR(20),     
+    data_type VARCHAR(20),
     unique_numbers BOOLEAN,
-    pattern VARCHAR(50),      
+    pattern VARCHAR(50),
     step INTEGER,
-
     include_zero BOOLEAN,
     include_min BOOLEAN,
     include_max BOOLEAN,
-
     edge_empty_input BOOLEAN,
     edge_single_element BOOLEAN,
     edge_all_equal BOOLEAN,
-
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
-/
+
+
 CREATE TABLE string_generator_inputs (
     id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL,                     
-    string_min INT,                          
-    string_max INT,                           
-    same_length INT,                         
-    include_prefix VARCHAR(255),              
-    include_suffix VARCHAR(255),            
-    sorting VARCHAR(20),                      
-    string_unique BOOLEAN,                    
-    string_letter VARCHAR(255),               
-    string_count INT,                         
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    user_id INTEGER NOT NULL,
+    string_min INT,
+    string_max INT,
+    same_length INT,
+    include_prefix VARCHAR(255),
+    include_suffix VARCHAR(255),
+    sorting VARCHAR(20),
+    string_unique BOOLEAN,
+    string_letter VARCHAR(255),
+    string_count INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
+
 
 CREATE TABLE vector_generator_inputs (
     id SERIAL PRIMARY KEY,
-    user_id INT NOT NULL,
+
+    user_id INTEGER NOT NULL,
     vector_length INT,
     vector_min NUMERIC,
     vector_max NUMERIC,
-
     vector_parity VARCHAR(10),
     vector_sign VARCHAR(5),
-
     vector_type VARCHAR(10),
     vector_unique BOOLEAN,
     vector_palindrome BOOLEAN,
-
     vector_line INT,
-
     vector_sorted VARCHAR(15),
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
-/
+
+
 CREATE TABLE matrix_generator_inputs (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
@@ -93,9 +90,10 @@ CREATE TABLE matrix_generator_inputs (
     matrix_parity VARCHAR(10),
     matrix_unique BOOLEAN NOT NULL,
     matrix_sign VARCHAR(5),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
-/
+
 
 CREATE TABLE graph_generator_inputs (
     id SERIAL PRIMARY KEY,
@@ -124,7 +122,6 @@ CREATE TABLE tree_generator_inputs (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
-
 /
 CREATE OR REPLACE VIEW user_input_statistics_view AS
 SELECT
@@ -215,7 +212,7 @@ FROM users u
          LEFT JOIN vector_generator_inputs v ON v.user_id = u.id
          LEFT JOIN matrix_generator_inputs m ON m.user_id = u.id
 GROUP BY u.id;
-/
+
 CREATE OR REPLACE FUNCTION pre_insert() RETURNS TRIGGER AS $$
 DECLARE
     cnt INTEGER;
@@ -264,3 +261,4 @@ BEGIN
     RETURN total_count;
 END;
 $$ LANGUAGE plpgsql;
+
