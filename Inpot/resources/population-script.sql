@@ -62,6 +62,7 @@ CREATE TABLE string_generator_inputs (
 
 CREATE TABLE vector_generator_inputs (
     id SERIAL PRIMARY KEY,
+
     user_id INTEGER NOT NULL,
     vector_length INT,
     vector_min NUMERIC,
@@ -108,8 +109,7 @@ CREATE TABLE graph_generator_inputs (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
-
-
+/
 CREATE TABLE tree_generator_inputs (
     id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
@@ -122,7 +122,96 @@ CREATE TABLE tree_generator_inputs (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+/
+CREATE OR REPLACE VIEW user_input_statistics_view AS
+SELECT
+    u.id AS user_id,
+    (
+    COUNT(n.id) +
+    COUNT(s.id) +
+    COUNT(v.id) +
+    COUNT(m.id)
+    ) AS total_generations
 
+    COUNT(DISTINCT n.id) AS number_count,
+    COUNT(DISTINCT s.id) AS string_count,
+    COUNT(DISTINCT v.id) AS vector_count,
+    COUNT(DISTINCT m.id) AS matrix_count,
+
+    (
+        SELECT MIN(created_at)
+        FROM (
+                 SELECT created_at FROM number_generator_inputs WHERE user_id = u.id
+                 UNION ALL
+                 SELECT created_at FROM string_generator_inputs WHERE user_id = u.id
+                 UNION ALL
+                 SELECT created_at FROM vector_generator_inputs WHERE user_id = u.id
+                 UNION ALL
+                 SELECT created_at FROM matrix_generator_inputs WHERE user_id = u.id
+             ) AS all_dates
+    ) AS first_generation,
+
+    (
+        SELECT MAX(created_at)
+        FROM (
+                 SELECT created_at FROM number_generator_inputs WHERE user_id = u.id
+                 UNION ALL
+                 SELECT created_at FROM string_generator_inputs WHERE user_id = u.id
+                 UNION ALL
+                 SELECT created_at FROM vector_generator_inputs WHERE user_id = u.id
+                 UNION ALL
+                 SELECT created_at FROM matrix_generator_inputs WHERE user_id = u.id
+             ) AS all_dates
+    ) AS last_generation,
+
+    AVG(n.count)::NUMERIC(10,2) AS avg_number_count,
+    MIN(n.count) AS min_number_count,
+    MAX(n.count) AS max_number_count,
+
+    AVG(s.string_count)::NUMERIC(10,2) AS avg_string_count,
+    MIN(s.string_count) AS min_string_count,
+    MAX(s.string_count) AS max_string_count,
+
+    AVG(v.vector_length)::NUMERIC(10,2) AS avg_vector_length,
+    MIN(v.vector_length) AS min_vector_length,
+    MAX(v.vector_length) AS max_vector_length,
+
+    AVG(m.matrix_rows)::NUMERIC(10,2) AS avg_matrix_rows,
+    MIN(m.matrix_rows) AS min_matrix_rows,
+    MAX(m.matrix_rows) AS max_matrix_rows,
+
+    AVG(m.matrix_cols)::NUMERIC(10,2) AS avg_matrix_cols,
+    MIN(m.matrix_cols) AS min_matrix_cols,
+    MAX(m.matrix_cols) AS max_matrix_cols,
+
+    COUNT(DISTINCT n.min_value || '-' || n.max_value || '-' || n.count || '-' || COALESCE(n.parity, '') || '-' || COALESCE(n.sign, '')) AS unique_number_combinations,
+    SUM(CASE WHEN n.unique_numbers THEN 1 ELSE 0 END) AS number_unique_true,
+    SUM(CASE WHEN n.edge_empty_input THEN 1 ELSE 0 END) AS number_edge_empty_true,
+    SUM(CASE WHEN n.edge_single_element THEN 1 ELSE 0 END) AS number_edge_single_true,
+    SUM(CASE WHEN n.edge_all_equal THEN 1 ELSE 0 END) AS number_edge_all_equal_true,
+
+
+    COUNT(DISTINCT s.string_min || '-' || s.string_max || '-' || s.string_count || '-' || COALESCE(s.sorting, '') || '-' || COALESCE(s.string_letter, '')) AS unique_string_combinations,
+    SUM(CASE WHEN s.string_unique THEN 1 ELSE 0 END) AS string_unique_true,
+    SUM(CASE WHEN s.include_prefix IS NOT NULL AND s.include_prefix <> '' THEN 1 ELSE 0 END) AS used_prefix,
+    SUM(CASE WHEN s.include_suffix IS NOT NULL AND s.include_suffix <> '' THEN 1 ELSE 0 END) AS used_suffix,
+
+    COUNT(DISTINCT v.vector_length || '-' || v.vector_min || '-' || v.vector_max || '-' || COALESCE(v.vector_type, '') || '-' || COALESCE(v.vector_sorted, '')) AS unique_vector_combinations,
+    SUM(CASE WHEN v.vector_unique THEN 1 ELSE 0 END) AS vector_unique_true,
+    SUM(CASE WHEN v.vector_palindrome THEN 1 ELSE 0 END) AS vector_palindrome_true,
+    SUM(CASE WHEN v.vector_sorted IS NOT NULL AND v.vector_sorted <> '' THEN 1 ELSE 0 END) AS vector_sorted_used,
+
+    COUNT(DISTINCT m.matrix_rows || 'x' || m.matrix_cols || '-' || m.matrix_min || '-' || m.matrix_max || '-' || COALESCE(m.matrix_parity, '') || '-' || m.matrix_sign) AS unique_matrix_combinations,
+    SUM(CASE WHEN m.matrix_map THEN 1 ELSE 0 END) AS matrix_map_true,
+    SUM(CASE WHEN m.matrix_unique THEN 1 ELSE 0 END) AS matrix_unique_true
+
+
+FROM users u
+         LEFT JOIN number_generator_inputs n ON n.user_id = u.id
+         LEFT JOIN string_generator_inputs s ON s.user_id = u.id
+         LEFT JOIN vector_generator_inputs v ON v.user_id = u.id
+         LEFT JOIN matrix_generator_inputs m ON m.user_id = u.id
+GROUP BY u.id;
 
 CREATE OR REPLACE FUNCTION pre_insert() RETURNS TRIGGER AS $$
 DECLARE
@@ -135,7 +224,7 @@ BEGIN
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-
+/
 
 CREATE OR REPLACE FUNCTION pre_delete() RETURNS TRIGGER AS $$
 BEGIN
@@ -145,13 +234,31 @@ BEGIN
     RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
-
-
+/
 CREATE TRIGGER insert_user
   BEFORE INSERT ON users
   FOR EACH ROW EXECUTE PROCEDURE pre_insert();
-
+/
 CREATE TRIGGER delete_user
   BEFORE DELETE ON users
   FOR EACH ROW EXECUTE PROCEDURE pre_delete();
+/
+CREATE OR REPLACE FUNCTION count_total_user_generations(p_user_id INTEGER)
+RETURNS INTEGER
+AS $$
+DECLARE
+    total_count INTEGER;
+BEGIN
+    SELECT  
+         (SELECT COUNT(*) FROM number_generator_inputs WHERE user_id = p_user_id) +
+         (SELECT COUNT(*) FROM string_generator_inputs WHERE user_id = p_user_id) +
+         (SELECT COUNT(*) FROM vector_generator_inputs WHERE user_id = p_user_id) +
+         (SELECT COUNT(*) FROM matrix_generator_inputs WHERE user_id = p_user_id) +
+         (SELECT COUNT(*) FROM graph_generator_inputs WHERE user_id = p_user_id) +
+         (SELECT COUNT(*) FROM tree_generator_inputs WHERE user_id = p_user_id)
+         INTO total_count;
+
+    RETURN total_count;
+END;
+$$ LANGUAGE plpgsql;
 
