@@ -35,14 +35,14 @@ export function createGraphSVG(graphData) {
         let nodesSVG = '';
         for (let i = 0; i < n; i++) {
             const pos = positions[i];
-            nodesSVG += `<circle cx="${pos.x}" cy="${pos.y}" r="${nodeRadius}" fill="lightblue" stroke="black"/>`;
+            nodesSVG += `<circle cx="${pos.x}" cy="${pos.y}" r="${nodeRadius}" stroke="black" fill="lightblue"/>`;
             nodesSVG += `<text x="${pos.x}" y="${pos.y}" font-size="12" text-anchor="middle" dominant-baseline="middle">${i + 1}</text>`;
         }
 
         const arrowMarker = directed ? `
   <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5"
-            markerWidth="6" markerHeight="6" orient="auto">
+    <marker id="arrow" viewBox="0 0 10 10" refX="20" refY="5"
+            markerWidth="10" markerHeight="10" orient="auto">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="black"/>
     </marker>
   </defs>` : '';
@@ -98,14 +98,14 @@ ${nodesSVG}
             let nodesSVG = '';
             for (let i = 0; i < n; i++) {
                 const pos = positions[i];
-                nodesSVG += `<circle cx="${pos.x}" cy="${pos.y}" r="${nodeRadius}" fill="lightblue" stroke="black"/>`;
+                nodesSVG += `<circle cx="${pos.x}" cy="${pos.y}" r="${nodeRadius}" stroke="black" fill="lightblue"/>`;
                 nodesSVG += `<text x="${pos.x}" y="${pos.y}" font-size="12" text-anchor="middle" dominant-baseline="middle">${i + 1}</text>`;
             }
 
             const arrowMarker = directed ? `
   <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5"
-            markerWidth="6" markerHeight="6" orient="auto">
+    <marker id="arrow" viewBox="0 0 10 10" refX="20" refY="5"
+            markerWidth="10" markerHeight="10" orient="auto">
       <path d="M 0 0 L 10 5 L 0 10 z" fill="black"/>
     </marker>
   </defs>` : '';
