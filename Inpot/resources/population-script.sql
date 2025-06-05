@@ -125,12 +125,13 @@ CREATE TABLE tree_generator_inputs (
 /
 CREATE OR REPLACE VIEW user_input_statistics_view AS
 SELECT
+    u.id AS user_id,
     (
-  COUNT(DISTINCT n.id) +
-  COUNT(DISTINCT s.id) +
-  COUNT(DISTINCT v.id) +
-  COUNT(DISTINCT m.id)
-) AS total_generations
+        COUNT(DISTINCT n.id) +
+        COUNT(DISTINCT s.id) +
+        COUNT(DISTINCT v.id) +
+        COUNT(DISTINCT m.id)
+    ) AS total_generations,
 
     COUNT(DISTINCT n.id) AS number_count,
     COUNT(DISTINCT s.id) AS string_count,
