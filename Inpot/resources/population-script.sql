@@ -125,13 +125,12 @@ CREATE TABLE tree_generator_inputs (
 /
 CREATE OR REPLACE VIEW user_input_statistics_view AS
 SELECT
-    u.id AS user_id,
     (
-    COUNT(n.id) +
-    COUNT(s.id) +
-    COUNT(v.id) +
-    COUNT(m.id)
-    ) AS total_generations
+  COUNT(DISTINCT n.id) +
+  COUNT(DISTINCT s.id) +
+  COUNT(DISTINCT v.id) +
+  COUNT(DISTINCT m.id)
+) AS total_generations
 
     COUNT(DISTINCT n.id) AS number_count,
     COUNT(DISTINCT s.id) AS string_count,
@@ -185,25 +184,24 @@ SELECT
     MAX(m.matrix_cols) AS max_matrix_cols,
 
     COUNT(DISTINCT n.min_value || '-' || n.max_value || '-' || n.count || '-' || COALESCE(n.parity, '') || '-' || COALESCE(n.sign, '')) AS unique_number_combinations,
-    SUM(CASE WHEN n.unique_numbers THEN 1 ELSE 0 END) AS number_unique_true,
-    SUM(CASE WHEN n.edge_empty_input THEN 1 ELSE 0 END) AS number_edge_empty_true,
-    SUM(CASE WHEN n.edge_single_element THEN 1 ELSE 0 END) AS number_edge_single_true,
-    SUM(CASE WHEN n.edge_all_equal THEN 1 ELSE 0 END) AS number_edge_all_equal_true,
-
+    COUNT(DISTINCT CASE WHEN n.unique_numbers THEN n.id END) AS number_unique_true,
+    COUNT(DISTINCT CASE WHEN n.edge_empty_input THEN n.id END) AS number_edge_empty_true,
+    COUNT(DISTINCT CASE WHEN n.edge_single_element THEN n.id END) AS number_edge_single_true,
+    COUNT(DISTINCT CASE WHEN n.edge_all_equal THEN n.id END) AS number_edge_all_equal_true,
 
     COUNT(DISTINCT s.string_min || '-' || s.string_max || '-' || s.string_count || '-' || COALESCE(s.sorting, '') || '-' || COALESCE(s.string_letter, '')) AS unique_string_combinations,
-    SUM(CASE WHEN s.string_unique THEN 1 ELSE 0 END) AS string_unique_true,
-    SUM(CASE WHEN s.include_prefix IS NOT NULL AND s.include_prefix <> '' THEN 1 ELSE 0 END) AS used_prefix,
-    SUM(CASE WHEN s.include_suffix IS NOT NULL AND s.include_suffix <> '' THEN 1 ELSE 0 END) AS used_suffix,
+    COUNT(DISTINCT CASE WHEN s.string_unique THEN s.id END) AS string_unique_true,
+    COUNT(DISTINCT CASE WHEN s.include_prefix IS NOT NULL AND s.include_prefix <> '' THEN s.id END) AS used_prefix,
+    COUNT(DISTINCT CASE WHEN s.include_suffix IS NOT NULL AND s.include_suffix <> '' THEN s.id END) AS used_suffix,
 
     COUNT(DISTINCT v.vector_length || '-' || v.vector_min || '-' || v.vector_max || '-' || COALESCE(v.vector_type, '') || '-' || COALESCE(v.vector_sorted, '')) AS unique_vector_combinations,
-    SUM(CASE WHEN v.vector_unique THEN 1 ELSE 0 END) AS vector_unique_true,
-    SUM(CASE WHEN v.vector_palindrome THEN 1 ELSE 0 END) AS vector_palindrome_true,
-    SUM(CASE WHEN v.vector_sorted IS NOT NULL AND v.vector_sorted <> '' THEN 1 ELSE 0 END) AS vector_sorted_used,
+    COUNT(DISTINCT CASE WHEN v.vector_unique THEN v.id END) AS vector_unique_true,
+    COUNT(DISTINCT CASE WHEN v.vector_palindrome THEN v.id END) AS vector_palindrome_true,
+    COUNT(DISTINCT CASE WHEN v.vector_sorted IS NOT NULL AND v.vector_sorted <> '' THEN v.id END) AS vector_sorted_used,
 
     COUNT(DISTINCT m.matrix_rows || 'x' || m.matrix_cols || '-' || m.matrix_min || '-' || m.matrix_max || '-' || COALESCE(m.matrix_parity, '') || '-' || m.matrix_sign) AS unique_matrix_combinations,
-    SUM(CASE WHEN m.matrix_map THEN 1 ELSE 0 END) AS matrix_map_true,
-    SUM(CASE WHEN m.matrix_unique THEN 1 ELSE 0 END) AS matrix_unique_true
+    COUNT(DISTINCT CASE WHEN m.matrix_map THEN m.id END) AS matrix_map_true,
+    COUNT(DISTINCT CASE WHEN m.matrix_unique THEN m.id END) AS matrix_unique_true,
 
 
 FROM users u
