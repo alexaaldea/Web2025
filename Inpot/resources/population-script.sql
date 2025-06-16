@@ -9,120 +9,120 @@ DROP TABLE IF EXISTS users CASCADE;
 
 
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    first_name VARCHAR(50),
-    last_name VARCHAR(50),
-    email VARCHAR(100) UNIQUE,
-    password VARCHAR(100),
-    role VARCHAR(20) DEFAULT 'user' CHECK (role IN ('user', 'admin')),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                       id SERIAL PRIMARY KEY,
+                       first_name VARCHAR(50),
+                       last_name VARCHAR(50),
+                       email VARCHAR(100) UNIQUE,
+                       password VARCHAR(100),
+                       role VARCHAR(20) DEFAULT 'user' CHECK (role IN ('user', 'admin')),
+                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 
 CREATE TABLE number_generator_inputs (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    min_value INTEGER,
-    max_value INTEGER,
-    count INTEGER,
-    parity VARCHAR(10),
-    sign VARCHAR(10),
-    sorted VARCHAR(50),
-    data_type VARCHAR(20),
-    unique_numbers BOOLEAN,
-    pattern VARCHAR(50),
-    step INTEGER,
-    include_zero BOOLEAN,
-    include_min BOOLEAN,
-    include_max BOOLEAN,
-    edge_empty_input BOOLEAN,
-    edge_single_element BOOLEAN,
-    edge_all_equal BOOLEAN,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+                                         id SERIAL PRIMARY KEY,
+                                         user_id INTEGER NOT NULL,
+                                         min_value INTEGER,
+                                         max_value INTEGER,
+                                         count INTEGER,
+                                         parity VARCHAR(10),
+                                         sign VARCHAR(10),
+                                         sorted VARCHAR(50),
+                                         data_type VARCHAR(20),
+                                         unique_numbers BOOLEAN,
+                                         pattern VARCHAR(50),
+                                         step INTEGER,
+                                         include_zero BOOLEAN,
+                                         include_min BOOLEAN,
+                                         include_max BOOLEAN,
+                                         edge_empty_input BOOLEAN,
+                                         edge_single_element BOOLEAN,
+                                         edge_all_equal BOOLEAN,
+                                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                         FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 
 CREATE TABLE string_generator_inputs (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    string_min INT,
-    string_max INT,
-    same_length INT,
-    include_prefix VARCHAR(255),
-    include_suffix VARCHAR(255),
-    sorting VARCHAR(20),
-    string_unique BOOLEAN,
-    string_letter VARCHAR(255),
-    string_count INT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+                                         id SERIAL PRIMARY KEY,
+                                         user_id INTEGER NOT NULL,
+                                         string_min INT,
+                                         string_max INT,
+                                         same_length INT,
+                                         include_prefix VARCHAR(255),
+                                         include_suffix VARCHAR(255),
+                                         sorting VARCHAR(20),
+                                         string_unique BOOLEAN,
+                                         string_letter VARCHAR(255),
+                                         string_count INT,
+                                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                         FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 
 CREATE TABLE vector_generator_inputs (
-    id SERIAL PRIMARY KEY,
+                                         id SERIAL PRIMARY KEY,
 
-    user_id INTEGER NOT NULL,
-    vector_length INT,
-    vector_min NUMERIC,
-    vector_max NUMERIC,
-    vector_parity VARCHAR(10),
-    vector_sign VARCHAR(5),
-    vector_type VARCHAR(10),
-    vector_unique BOOLEAN,
-    vector_palindrome BOOLEAN,
-    vector_line INT,
-    vector_sorted VARCHAR(15),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+                                         user_id INTEGER NOT NULL,
+                                         vector_length INT,
+                                         vector_min NUMERIC,
+                                         vector_max NUMERIC,
+                                         vector_parity VARCHAR(10),
+                                         vector_sign VARCHAR(5),
+                                         vector_type VARCHAR(10),
+                                         vector_unique BOOLEAN,
+                                         vector_palindrome BOOLEAN,
+                                         vector_line INT,
+                                         vector_sorted VARCHAR(15),
+                                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                         FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 
 CREATE TABLE matrix_generator_inputs (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    matrix_rows INTEGER NOT NULL,
-    matrix_cols INTEGER NOT NULL,
-    matrix_map BOOLEAN NOT NULL,
-    matrix_min INTEGER NOT NULL,
-    matrix_max INTEGER NOT NULL,
-    matrix_parity VARCHAR(10),
-    matrix_unique BOOLEAN NOT NULL,
-    matrix_sign VARCHAR(5),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+                                         id SERIAL PRIMARY KEY,
+                                         user_id INTEGER NOT NULL,
+                                         matrix_rows INTEGER NOT NULL,
+                                         matrix_cols INTEGER NOT NULL,
+                                         matrix_map BOOLEAN NOT NULL,
+                                         matrix_min INTEGER NOT NULL,
+                                         matrix_max INTEGER NOT NULL,
+                                         matrix_parity VARCHAR(10),
+                                         matrix_unique BOOLEAN NOT NULL,
+                                         matrix_sign VARCHAR(5),
+                                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                         FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 
 CREATE TABLE graph_generator_inputs (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    graph_nodes INTEGER NOT NULL,
-    graph_edges INTEGER NOT NULL,
-    graph_oriented BOOLEAN NOT NULL,
-    graph_connected BOOLEAN NOT NULL,
-    graph_bipartit BOOLEAN NOT NULL,
-    graph_weighted BOOLEAN NOT NULL,
-    graph_min_weight INTEGER,
-    graph_max_weight INTEGER,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+                                        id SERIAL PRIMARY KEY,
+                                        user_id INTEGER NOT NULL,
+                                        graph_nodes INTEGER NOT NULL,
+                                        graph_edges INTEGER NOT NULL,
+                                        graph_oriented BOOLEAN NOT NULL,
+                                        graph_connected BOOLEAN NOT NULL,
+                                        graph_bipartit BOOLEAN NOT NULL,
+                                        graph_weighted BOOLEAN NOT NULL,
+                                        graph_min_weight INTEGER,
+                                        graph_max_weight INTEGER,
+                                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                        FOREIGN KEY (user_id) REFERENCES users(id)
 );
-/
+
 CREATE TABLE tree_generator_inputs (
-    id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    tree_nodes INTEGER NOT NULL,
-    tree_binary BOOLEAN NOT NULL,
-    tree_lvl INTEGER NOT NULL,
-    tree_weighted BOOLEAN NOT NULL,
-    tree_min_weight INTEGER,
-    tree_max_weight INTEGER,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+                                       id SERIAL PRIMARY KEY,
+                                       user_id INTEGER NOT NULL,
+                                       tree_nodes INTEGER NOT NULL,
+                                       tree_binary BOOLEAN NOT NULL,
+                                       tree_lvl INTEGER NOT NULL,
+                                       tree_weighted BOOLEAN NOT NULL,
+                                       tree_min_weight INTEGER,
+                                       tree_max_weight INTEGER,
+                                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                       FOREIGN KEY (user_id) REFERENCES users(id)
 );
-/
+
 CREATE OR REPLACE VIEW user_input_statistics_view AS
 SELECT
     u.id AS user_id,
@@ -131,7 +131,7 @@ SELECT
         COUNT(DISTINCT s.id) +
         COUNT(DISTINCT v.id) +
         COUNT(DISTINCT m.id)
-    ) AS total_generations,
+        ) AS total_generations,
 
     COUNT(DISTINCT n.id) AS number_count,
     COUNT(DISTINCT s.id) AS string_count,
@@ -202,7 +202,7 @@ SELECT
 
     COUNT(DISTINCT m.matrix_rows || 'x' || m.matrix_cols || '-' || m.matrix_min || '-' || m.matrix_max || '-' || COALESCE(m.matrix_parity, '') || '-' || m.matrix_sign) AS unique_matrix_combinations,
     COUNT(DISTINCT CASE WHEN m.matrix_map THEN m.id END) AS matrix_map_true,
-    COUNT(DISTINCT CASE WHEN m.matrix_unique THEN m.id END) AS matrix_unique_true,
+    COUNT(DISTINCT CASE WHEN m.matrix_unique THEN m.id END) AS matrix_unique_true
 
 
 FROM users u
@@ -218,44 +218,44 @@ DECLARE
 BEGIN
     SELECT COUNT(*) INTO cnt FROM users WHERE email = NEW.email;
     IF cnt > 0 THEN
-       RAISE EXCEPTION 'User email % already exists', NEW.email;
+        RAISE EXCEPTION 'User email % already exists', NEW.email;
     END IF;
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-/
+
 
 CREATE OR REPLACE FUNCTION pre_delete() RETURNS TRIGGER AS $$
 BEGIN
     IF OLD.role <> 'user' THEN
-       RAISE EXCEPTION 'Cannot delete admin user';
+        RAISE EXCEPTION 'Cannot delete admin user';
     END IF;
     RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
-/
+
 CREATE TRIGGER insert_user
-  BEFORE INSERT ON users
-  FOR EACH ROW EXECUTE PROCEDURE pre_insert();
-/
+    BEFORE INSERT ON users
+    FOR EACH ROW EXECUTE PROCEDURE pre_insert();
+
 CREATE TRIGGER delete_user
-  BEFORE DELETE ON users
-  FOR EACH ROW EXECUTE PROCEDURE pre_delete();
-/
+    BEFORE DELETE ON users
+    FOR EACH ROW EXECUTE PROCEDURE pre_delete();
+
 CREATE OR REPLACE FUNCTION count_total_user_generations(p_user_id INTEGER)
-RETURNS INTEGER
+    RETURNS INTEGER
 AS $$
 DECLARE
     total_count INTEGER;
 BEGIN
-    SELECT  
-         (SELECT COUNT(*) FROM number_generator_inputs WHERE user_id = p_user_id) +
-         (SELECT COUNT(*) FROM string_generator_inputs WHERE user_id = p_user_id) +
-         (SELECT COUNT(*) FROM vector_generator_inputs WHERE user_id = p_user_id) +
-         (SELECT COUNT(*) FROM matrix_generator_inputs WHERE user_id = p_user_id) +
-         (SELECT COUNT(*) FROM graph_generator_inputs WHERE user_id = p_user_id) +
-         (SELECT COUNT(*) FROM tree_generator_inputs WHERE user_id = p_user_id)
-         INTO total_count;
+    SELECT
+        (SELECT COUNT(*) FROM number_generator_inputs WHERE user_id = p_user_id) +
+        (SELECT COUNT(*) FROM string_generator_inputs WHERE user_id = p_user_id) +
+        (SELECT COUNT(*) FROM vector_generator_inputs WHERE user_id = p_user_id) +
+        (SELECT COUNT(*) FROM matrix_generator_inputs WHERE user_id = p_user_id) +
+        (SELECT COUNT(*) FROM graph_generator_inputs WHERE user_id = p_user_id) +
+        (SELECT COUNT(*) FROM tree_generator_inputs WHERE user_id = p_user_id)
+    INTO total_count;
 
     RETURN total_count;
 END;

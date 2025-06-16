@@ -6,6 +6,7 @@ import { treeModel } from '../models/treeModel.js';
 import { graphModel } from '../models/graphModel.js';
 import { createGraphSVG } from '../models/create_svg.js';
 import { exportAsJson, parseTextOutputToArray } from '../utils/exportUtils.js';
+import { exportAsCsv } from '../utils/exportCSV.js';
 
 
 export const mainController = {
@@ -354,6 +355,42 @@ saveMatrixInputs() {
         const numbers = outputText.trim().split(',').map(Number);
         exportAsJson(numbers, 'numbers_output.json');
     },
+
+    exportVectorAsCsv() {
+    const outputText = document.getElementById('vector-output').textContent;
+    const data = parseTextOutputToArray(outputText);
+    exportAsCsv(data, 'vector_output.csv');
+},
+
+exportMatrixAsCsv() {
+    const outputText = document.getElementById('matrix-output').textContent;
+    const data = parseTextOutputToArray(outputText);
+    exportAsCsv(data, 'matrix_output.csv');
+},
+
+exportTreeAsCsv() {
+    const outputText = document.getElementById('tree-output').textContent;
+    const lines = outputText.trim().split('\n');
+    exportAsCsv(lines, 'tree_output.csv');
+},
+
+exportStringAsCsv() {
+    const outputText = document.getElementById('string-output').textContent;
+    const lines = outputText.trim().split('\n');
+    exportAsCsv(lines, 'string_output.csv');
+},
+
+exportGraphAsCsv() {
+    const outputText = document.getElementById('graph-output').textContent;
+    const items = outputText.trim().split(/\s+/);
+    exportAsCsv(items, 'graph_output.csv');
+},
+
+exportNumbersAsCsv() {
+    const outputText = document.getElementById('number-output').textContent;
+    const numbers = outputText.trim().split(',').map(Number);
+    exportAsCsv(numbers, 'numbers_output.csv');
+},
 
 
     loadSidebar() {
