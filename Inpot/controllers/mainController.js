@@ -415,7 +415,7 @@ exportNumbersAsCsv() {
 
 
     loadComponents() {
-        const components = ['number', 'string', 'vector', 'matrix', 'graph', 'tree'];
+        const components = ['number', 'string', 'vector', 'matrix', 'graph', 'tree', 'admin'];
         components.forEach(component => {
             fetch(`../views/components/${component}.html`)
                 .then(response => {
@@ -433,6 +433,15 @@ exportNumbersAsCsv() {
                         document.getElementById(component).innerHTML = html;
                         mainController.setupGraphListeners();
                     }
+
+                    if (component === 'admin') {
+                    if (typeof adminPanel !== 'undefined' && typeof adminPanel.loadUsers === 'function') {
+                        console.log("Calling adminPanel.loadUsers()");
+                        adminPanel.loadUsers();
+                    } else {
+                        console.warn("adminPanel is not defined or loadUsers is missing");
+                    }
+                }
                 })
                 .catch(error => console.error(`Error loading ${component}:`, error));
 
