@@ -461,7 +461,7 @@ export const mainController = {
   });
 
   if (id === 'history') {
-    this.loadHistory(); // Load history dynamically
+    this.loadHistory(); 
   }
 },
 
@@ -481,7 +481,7 @@ loadHistory: async function () {
     const historyData = await historyRes.json();
     const statsData = await statsRes.json();
 
-    container.innerHTML = ''; // Clear previous content
+    container.innerHTML = '';
 
     container.appendChild(this.createTable('Number Inputs', historyData.number));
     container.appendChild(this.createTable('String Inputs', historyData.string));
