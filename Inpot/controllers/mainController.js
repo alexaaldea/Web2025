@@ -453,6 +453,129 @@ export const mainController = {
 
         });
     },
+    showContainer: function (id) {
+  const containers = ['number', 'string', 'vector', 'matrix', 'graph', 'tree', 'history', 'admin'];
+  containers.forEach(container => {
+    const el = document.getElementById(container);
+    if (el) el.style.display = container === id ? 'block' : 'none';
+  });
+
+  if (id === 'history') {
+    this.loadHistory(); // Load history dynamically
+  }
+},
+
+loadHistory: async function () {
+  const container = document.getElementById('history');
+  container.innerHTML = '<p>Loading history...</p>';
+
+  try {
+    const [historyRes, statsRes] = await Promise.all([
+      fetch('/Web2025/Inpot/config/history.php'),
+      fetch('/Web2025/Inpot/config/user_stats.php')
+    ]);
+
+    if (!historyRes.ok) throw new Error('Failed to load history');
+    if (!statsRes.ok) throw new Error('Failed to load stats');
+
+    const historyData = await historyRes.json();
+    const statsData = await statsRes.json();
+
+    container.innerHTML = ''; // Clear previous content
+
+    container.appendChild(this.createTable('Number Inputs', historyData.number));
+    container.appendChild(this.createTable('String Inputs', historyData.string));
+    container.appendChild(this.createTable('Vector Inputs', historyData.vector));
+    container.appendChild(this.createTable('Matrix Inputs', historyData.matrix));
+    container.appendChild(this.createTable('Graph Inputs', historyData.graph));
+    container.appendChild(this.createTable('Tree Inputs', historyData.tree));
+    container.appendChild(this.createStatsTable(statsData));
+
+  } catch (err) {
+    container.innerHTML = `<div class="error">Error: ${err.message}</div>`;
+  }
+},
+
+createTable: function (sectionTitle, data) {
+  const section = document.createElement('div');
+  section.className = 'section';
+
+  const title = document.createElement('div');
+  title.className = 'section-title';
+  title.textContent = sectionTitle;
+  section.appendChild(title);
+
+  if (data.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'empty';
+    empty.textContent = 'No inputs generated yet.';
+    section.appendChild(empty);
+  } else {
+    const table = document.createElement('table');
+    table.className = 'history-table';
+
+    const thead = document.createElement('thead');
+    thead.innerHTML = `<tr><th>ID</th><th>Created At</th><th>Input Summary</th><th>Actions</th></tr>`;
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    data.forEach(entry => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${entry.id}</td>
+        <td>${entry.created_at}</td>
+        <td>${entry.input}</td>
+        <td><button class="delete-btn">Delete</button></td>
+      `;
+
+      row.querySelector('.delete-btn').addEventListener('click', async () => {
+        const response = await fetch(`/Web2025/Inpot/config/delete.php`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: entry.id,
+            type: sectionTitle.toLowerCase().split(' ')[0]
+          })
+        });
+
+        if (response.ok) {
+          alert('Entry deleted successfully');
+          mainController.loadHistory(); // reload updated history
+        } else {
+          alert('Failed to delete entry');
+        }
+      });
+
+      tbody.appendChild(row);
+    });
+
+    table.appendChild(tbody);
+    section.appendChild(table);
+  }
+
+  return section;
+},
+
+createStatsTable: function (statsData) {
+  // Example for stats rendering if you have user_stats.php
+  const section = document.createElement('div');
+  section.className = 'stats-section';
+
+  const title = document.createElement('div');
+  title.className = 'section-title';
+  title.textContent = 'User Stats';
+  section.appendChild(title);
+
+  const list = document.createElement('ul');
+  for (let key in statsData) {
+    const item = document.createElement('li');
+    item.textContent = `${key}: ${statsData[key]}`;
+    list.appendChild(item);
+  }
+
+  section.appendChild(list);
+  return section;
+},
     logout() {
         window.location.href = '../config/logout.php';
     },
