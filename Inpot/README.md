@@ -157,11 +157,7 @@ Maybe you can mention me or this repo in the acknowledgements too
 <!-- Prerequisites -->
 ### :bangbang: Prerequisites
 
-This project uses Yarn as package manager
 
-```bash
- npm install --global yarn
-```
 
 
 <!-- Run Locally -->
@@ -218,9 +214,7 @@ Explore the screenshots above to see the main user and admin interfaces. For mor
 
   + You can open an issue on the [GitHub Issues page](https://github.com/alexaaldea/Web2025/issues).
 
-- **Is there a live demo available?**
 
-  + Yes, see the "View Demo" link at the top of this README for a live version.
 
 
 <!-- License -->
