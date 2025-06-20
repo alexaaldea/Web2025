@@ -61,19 +61,32 @@ $data = [
 
 $numberRows = fetchAll($pdo, "SELECT id, created_at, min_value, max_value, count, parity, unique_numbers FROM number_generator_inputs WHERE user_id = :user_id", ['user_id' => $user_id]);
 foreach ($numberRows as $row) {
-    $data['number'][]=[
+    $data['number'][] = [
         'id' => $row['id'],
         'created_at' => $row['created_at'],
-        'input'=> "Min: {$row['min_value']}, Max: {$row['max_value']}, Count: {$row['count']}, Parity: {$row['parity']}, Unique: " . ($row['unique_numbers'] ? 'true' : 'false')
+        'input' => json_encode([
+            'min' => (int)$row['min_value'],
+            'max' => (int)$row['max_value'],
+            'count' => (int)$row['count'],
+            'parity' => $row['parity'],
+            'unique' => (bool)$row['unique_numbers']
+        ])
     ];
 }
+
 
 $stringRows = fetchAll($pdo, "SELECT id, created_at, string_min, string_max, include_prefix, string_count, string_unique FROM string_generator_inputs WHERE user_id = :user_id", ['user_id' => $user_id]);
 foreach ($stringRows as $row) {
     $data['string'][] = [
         'id' => $row['id'],
         'created_at' => $row['created_at'],
-        'input' => "MinLen: {$row['string_min']}, MaxLen: {$row['string_max']}, Count: {$row['string_count']}, Prefix: \"{$row['include_prefix']}\", Unique: " . ($row['string_unique'] ? 'true' : 'false')
+        'input' => json_encode([
+            'minLength' => (int)$row['string_min'],
+            'maxLength' => (int)$row['string_max'],
+            'count' => (int)$row['string_count'],
+            'prefix' => $row['include_prefix'],
+            'unique' => (bool)$row['string_unique']
+        ])
     ];
 }
 
@@ -82,18 +95,33 @@ foreach ($vectorRows as $row) {
     $data['vector'][] = [
         'id' => $row['id'],
         'created_at' => $row['created_at'],
-        'input' => "Length: {$row['vector_length']}, Min: {$row['vector_min']}, Max: {$row['vector_max']}, Type: {$row['vector_type']}, Sorted: {$row['vector_sorted']}"
+        'input' => json_encode([
+            'elem' => (int)$row['vector_length'],
+            'min' => (int)$row['vector_min'],
+            'max' => (int)$row['vector_max'],
+            'type' => $row['vector_type'],
+            'sorted' => (bool)$row['vector_sorted']
+        ])
     ];
 }
+
 
 $matrixRows = fetchAll($pdo, "SELECT id, created_at, matrix_rows, matrix_cols, matrix_min, matrix_max, matrix_parity, matrix_unique FROM matrix_generator_inputs WHERE user_id = :user_id", ['user_id' => $user_id]);
 foreach ($matrixRows as $row) {
     $data['matrix'][] = [
         'id' => $row['id'],
         'created_at' => $row['created_at'],
-        'input' => "{$row['matrix_rows']}x{$row['matrix_cols']}, Min: {$row['matrix_min']}, Max: {$row['matrix_max']}, Parity: {$row['matrix_parity']}, Unique: " . ($row['matrix_unique'] ? 'true' : 'false')
+        'input' => json_encode([
+            'row' => (int)$row['matrix_rows'],
+            'col' => (int)$row['matrix_cols'],
+            'min' => (int)$row['matrix_min'],
+            'max' => (int)$row['matrix_max'],
+            'parity' => $row['matrix_parity'],
+            'unique' => (bool)$row['matrix_unique']
+        ])
     ];
 }
+
 header('Content-Type: application/json');
 echo json_encode($data);
 exit;

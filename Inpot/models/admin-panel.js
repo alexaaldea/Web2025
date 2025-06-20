@@ -1,31 +1,41 @@
 window.adminPanel = {
     loadUsers: function () {
-        console.log("adminPanel.loadUsers() called ✅");
-        fetch('../config/get_users.php')
-            .then(res => {
-                console.log('get_users.php response status:', res.status);
-                return res.json();
-            })
-            .then(users => {
-                console.log("Users loaded from backend:", users);
-                const list = document.getElementById('user-list');
-                console.log("user-list element:", list);
-                list.innerHTML = '';
 
-                users.forEach(user => {
-                    const div = document.createElement('div');
-                    div.innerHTML = `
-                        <span>${user.email} (${user.role})</span>
-                        <button onclick="adminPanel.deleteUser('${user.email}')">Delete</button>
-                    `;
-                    list.appendChild(div);
-                });
-            })
-            .catch(err => {
-                document.getElementById('user-list').textContent = 'Error: ' + err.message;
+    fetch('/Web2025/Inpot/config/get_users.php')
+        .then(res => {
+            return res.json();
+        })
+        .then(users => {
+            const container = document.getElementById('user-list');
+
+            if (!Array.isArray(users)) {
+                container.innerHTML = `<p>Error: ${users.error || 'Unauthorized access'}</p>`;
+                return;
+            }
+
+            if (!container) {
+                console.error('user-list container not found');
+                return;
+            }
+
+            container.innerHTML = ''; 
+
+            users.forEach(user => {
+                const userDiv = document.createElement('div');
+                userDiv.innerHTML = `
+                    <span>${user.email} (${user.role})</span>
+                    ${user.role !== 'admin' ? `<button onclick="adminPanel.deleteUser('${user.email}')">Delete</button>` : ''}
+                `;
+                container.appendChild(userDiv);
             });
-    },
-
+        })
+        .catch(err => {
+            const container = document.getElementById('user-list');
+            if (container) {
+                container.innerHTML = `<p>Error loading users: ${err.message}</p>`;
+            }
+        });
+},
     deleteUser: function (email) {
         if (!confirm(`Are you sure you want to delete ${email}?`)) return;
 
