@@ -19,11 +19,19 @@
     </select><br><br>
 
     <label for="tree-min-weight">Min weight:</label>
-    <input type="number" id="tree-min-weight" placeholder="-"><br><br>
+    <input type="number" id="tree-min-weight" placeholder="default 1"><br><br>
 
     <label for="tree-max-weight">Max weight:</label>
-    <input type="number" id="tree-max-weight" placeholder="-"><br><br>
+    <input type="number" id="tree-max-weight" placeholder="default 10"><br><br>
 
+    <label for="tree-size-svg">Size for SVG:</label>
+    <select id="tree-size-svg"> 
+        <option value="small">Small</option>
+        <option value="medium">Medium</option>  
+        <option value="large">Large</option>  
+    </select>
+    <br><br>
+    
     <label for="tree-format">Display format:</label>
     <select id="tree-format">
         <option value="edge">Edge List</option>
@@ -34,5 +42,6 @@
     <button onclick="mainController.exportTreeAsJson()">Export as JSON</button>
     <button onclick="mainController.exportTreeAsCsv()">Export as CSV</button>
     <button onclick="mainController.saveTreeInputs()">Save Inputs</button>
+     <button onclick="mainController.exportTreeSVG()">Export SVG</button>
 
     <div id="tree-output" style="margin-top: 20px; white-space: pre-wrap;"></div>

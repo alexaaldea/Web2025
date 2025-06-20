@@ -1,5 +1,14 @@
 export const treeModel = {
     generateTree(node, binary, levels, weighted, min_weight, max_weight, format) {
+        min_weight = parseInt(min_weight);
+        max_weight = parseInt(max_weight);
+        if (isNaN(min_weight)) {
+            min_weight = 1;
+        }
+        if (isNaN(max_weight)) {
+            max_weight = 10;
+        }
+
         if (node < 1) {
             throw new Error("Number of nodes must be at least 1");
         }
@@ -21,11 +30,31 @@ export const treeModel = {
             return Math.floor(Math.random() * (max_weight - min_weight + 1)) + min_weight;
         }
 
-        for (let newNode = 2; newNode <= node; newNode++) {
+      
+        let lastNode = 1;
+        let used = new Set([1]);
+        for (let l = 1; l < levels; l++) {
+            let newNode = l + 1;
+            let w;
+            if (weighted == "yes") {
+                w = randomWeight();
+            } else {
+                w = 1;
+            }
+            edges.push({ parent: lastNode, child: newNode, weight: w });
+            parentVector[newNode] = lastNode;
+            available.push({ id: newNode, level: l, children: 0 });
+            lastNode = newNode;
+            used.add(newNode);
+        }
+
+        available = available.filter(n => n.id === lastNode);
+
+       
+        for (let newNode = levels + 1; newNode <= node; newNode++) {
             if (available.length == 0) {
                 throw new Error("Not enough levels to place all nodes; consider increasing levels.");
             }
-
             let idx = Math.floor(Math.random() * available.length);
             let parentObj = available[idx];
             let w;
@@ -34,7 +63,6 @@ export const treeModel = {
             } else {
                 w = 1;
             }
-
             edges.push({ parent: parentObj.id, child: newNode, weight: w });
             parentVector[newNode] = parentObj.id;
             let newLevel = parentObj.level + 1;

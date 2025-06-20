@@ -5,6 +5,7 @@ import { stringModel } from '../models/stringModel.js';
 import { treeModel } from '../models/treeModel.js';
 import { graphModel } from '../models/graphModel.js';
 import { createGraphSVG } from '../models/create_svg.js';
+import { createTreeSVG } from '../models/create_tree_svg.js'; // Make sure this import is present
 import { exportAsJson, parseTextOutputToArray } from '../utils/exportUtils.js';
 import { exportAsCsv } from '../utils/exportCSV.js';
 
@@ -145,6 +146,7 @@ export const mainController = {
 
         const graphs = graphModel.generateGraph(node, edge, oriented, connected, bipartit, weighted, min_weight, max_weight, format);
         window.currentGraphResult = graphs;
+        window.currentGraphnode = node;
         window.currentGraphOriented = (oriented == 'yes');
         document.getElementById('graph-output').textContent = graphs;
 
@@ -156,12 +158,15 @@ export const mainController = {
         const binary = document.getElementById('tree-binary').value;
         const levels = parseInt(document.getElementById('tree-lvl').value);
         const weighted = document.getElementById('tree-weighted').value;
-        const min_weight = parseInt(document.getElementById('graph-min-weight').value);
-        const max_weight = parseInt(document.getElementById('graph-max-weight').value);
+        const min_weight = document.getElementById('tree-min-weight').value.trim();
+        const max_weight = document.getElementById('tree-max-weight').value.trim();
         const format = document.getElementById('tree-format').value;
 
+        const minW = min_weight === "" ? undefined : parseInt(min_weight);
+        const maxW = max_weight === "" ? undefined : parseInt(max_weight);
+
         try {
-            const trees = treeModel.generateTree(node, binary, levels, weighted, min_weight, max_weight, format);
+            const trees = treeModel.generateTree(node, binary, levels, weighted, minW, maxW, format);
             if (Array.isArray(trees)) {
                 document.getElementById('tree-output').textContent = trees.join("\n");
             } else {
@@ -504,6 +509,10 @@ export const mainController = {
                         mainController.setupGraphListeners();
                     }
 
+                    if (component === 'tree') {
+                        mainController.setupTreeListeners();
+                    }
+
                     if (component === 'admin') {
                         const waitForAdmin = setInterval(() => {
                             if (typeof window.isAdmin !== 'undefined') {
@@ -821,6 +830,53 @@ export const mainController = {
         toggleGraphFields();
     },
 
+    setupTreeListeners() {
+        const weightedSelect = document.getElementById('tree-weighted');
+        const minWeightInput = document.getElementById('tree-min-weight');
+        const maxWeightInput = document.getElementById('tree-max-weight');
+        const formatSelect = document.getElementById('tree-format');
+
+        if (!weightedSelect || !minWeightInput || !maxWeightInput || !formatSelect) {
+            console.warn('One or more Tree component elements not found.');
+            return;
+        }
+
+        function toggleTreeFields() {
+            const weightedLabel = document.querySelector('label[for="tree-weighted"]');
+            const minWeightLabel = document.querySelector('label[for="tree-min-weight"]');
+            const maxWeightLabel = document.querySelector('label[for="tree-max-weight"]');
+
+            if (formatSelect.value === 'parent') {
+                weightedSelect.style.display = 'none';
+                minWeightInput.style.display = 'none';
+                maxWeightInput.style.display = 'none';
+                if (weightedLabel) weightedLabel.style.display = 'none';
+                if (minWeightLabel) minWeightLabel.style.display = 'none';
+                if (maxWeightLabel) maxWeightLabel.style.display = 'none';
+            } else {
+                weightedSelect.style.display = 'inline-block';
+                if (weightedLabel) weightedLabel.style.display = 'inline-block';
+
+                if (weightedSelect.value === 'yes') {
+                    minWeightInput.style.display = 'inline-block';
+                    maxWeightInput.style.display = 'inline-block';
+                    if (minWeightLabel) minWeightLabel.style.display = 'inline-block';
+                    if (maxWeightLabel) maxWeightLabel.style.display = 'inline-block';
+                } else {
+                    minWeightInput.style.display = 'none';
+                    maxWeightInput.style.display = 'none';
+                    if (minWeightLabel) minWeightLabel.style.display = 'none';
+                    if (maxWeightLabel) maxWeightLabel.style.display = 'none';
+                }
+            }
+        }
+
+        formatSelect.addEventListener('change', toggleTreeFields);
+        weightedSelect.addEventListener('change', toggleTreeFields);
+
+        toggleTreeFields();
+    },
+
 
     addNavigationListeners() {
         const navLinks = document.querySelectorAll('[data-container]');
@@ -840,7 +896,10 @@ export const mainController = {
             console.warn('No graph generated yet.');
             return;
         }
-
+        if (window.currentGraphnode > 10) {
+        alert('SVG export is only available for trees with 10 nodes or fewer.');
+        return;
+    }
         const svgSize = document.getElementById('graph-size-svg')?.value || 'medium';
         const svgOutput = createGraphSVG(graphData, svgSize);
 
@@ -850,6 +909,29 @@ export const mainController = {
         const a = document.createElement('a');
         a.href = url;
         a.download = 'graph.svg';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    },
+
+    exportTreeSVG() {
+        const treeData = document.getElementById('tree-output').textContent;
+        if (!treeData.trim()) {
+            alert('No tree generated yet.');
+            console.warn('No tree generated yet.');
+            return;
+        }
+
+        const svgSize = document.getElementById('tree-size-svg')?.value || 'medium';
+        const svgOutput = createTreeSVG(treeData, svgSize);
+
+        const blob = new Blob([svgOutput], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'tree.svg';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
