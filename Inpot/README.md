@@ -231,7 +231,7 @@ Distributed under the no License. See LICENSE.txt for more information.
 
 <!-- Contact -->
 ## :handshake: Contact
-Aldea Alexandra Maria - -
+Aldea Alexandra Maria - alexandra.aldea2004@gmail.com
 Cotea Carla Gabriela - coteacarla@gmail.com
 
 
