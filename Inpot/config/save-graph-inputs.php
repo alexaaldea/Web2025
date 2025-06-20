@@ -74,8 +74,8 @@ try {
     $stmt->bindValue(':graph_connected', toBoolOrNull($data['connected']), is_null(toBoolOrNull($data['connected'])) ? PDO::PARAM_NULL : PDO::PARAM_BOOL);
     $stmt->bindValue(':graph_bipartit', toBoolOrNull($data['bipartit']), is_null(toBoolOrNull($data['bipartit'])) ? PDO::PARAM_NULL : PDO::PARAM_BOOL);
     $stmt->bindValue(':graph_weighted', toBoolOrNull($data['weighted']), is_null(toBoolOrNull($data['weighted'])) ? PDO::PARAM_NULL : PDO::PARAM_BOOL);
-    $stmt->bindValue(':graph_min_weight', $data['minWeight'], PDO::PARAM_INT);
-    $stmt->bindValue(':graph_max_weight', $data['maxWeight'], PDO::PARAM_INT);
+    $stmt->bindValue(':graph_min_weight', $data['min_weight'], PDO::PARAM_INT);
+    $stmt->bindValue(':graph_max_weight', $data['max_weight'], PDO::PARAM_INT);
 
     $stmt->execute();
 

@@ -320,6 +320,78 @@ export const mainController = {
             });
     },
 
+    saveTreeInputs() {
+        const payload = {
+            nodes: parseInt(document.getElementById('tree-nodes').value),
+            binary: document.getElementById('tree-binary').value,
+            levels: parseInt(document.getElementById('tree-lvl').value),
+            weighted: document.getElementById('tree-weighted').value,
+            min_weight: parseInt(document.getElementById('tree-min-weight').value),
+            max_weight: parseInt(document.getElementById('tree-max-weight').value)
+        };
+
+        fetch('../config/save-tree-inputs.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+            .then(response => response.json())
+            .then(data => {
+                const statusDiv = document.getElementById('save-status-tree');
+                if (statusDiv) {
+                    if (data.success) {
+                        statusDiv.textContent = 'Tree inputs saved successfully!';
+                        statusDiv.style.color = 'green';
+                    } else {
+                        statusDiv.textContent = data.error || 'Failed to save tree inputs.';
+                        statusDiv.style.color = 'red';
+                    }
+                }
+            })
+            .catch(err => {
+                console.error('Save error:', err);
+                const statusDiv = document.getElementById('save-status-tree');
+                if (statusDiv) statusDiv.textContent = 'Save failed';
+            });
+    },
+
+    saveGraphInputs() {
+        const payload = {
+            nodes: parseInt(document.getElementById('graph-nodes').value),
+            edges: parseInt(document.getElementById('graph-edges').value),
+            oriented: document.getElementById('graph-oriented').value,
+            connected: document.getElementById('graph-connected').value,
+            bipartit: document.getElementById('graph-bipartit').value,
+            weighted: document.getElementById('graph-weighted').value,
+            min_weight: parseInt(document.getElementById('graph-min-weight').value),
+            max_weight: parseInt(document.getElementById('graph-max-weight').value),
+        };
+
+        fetch('../config/save-graph-inputs.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+            .then(response => response.json())
+            .then(data => {
+                const statusDiv = document.getElementById('save-status-graph');
+                if (statusDiv) {
+                    if (data.success) {
+                        statusDiv.textContent = 'Graph inputs saved successfully!';
+                        statusDiv.style.color = 'green';
+                    } else {
+                        statusDiv.textContent = data.error || 'Failed to save graph inputs.';
+                        statusDiv.style.color = 'red';
+                    }
+                }
+            })
+            .catch(err => {
+                console.error('Save error:', err);
+                const statusDiv = document.getElementById('save-status-graph');
+                if (statusDiv) statusDiv.textContent = 'Save failed';
+            });
+    },
+
     exportVectorAsJson() {
         const outputText = document.getElementById('vector-output').textContent;
         const data = parseTextOutputToArray(outputText);
@@ -762,15 +834,26 @@ export const mainController = {
 
     },
     exportGraphSVG() {
-
         const graphData = window.currentGraphResult;
         if (!graphData) {
+            alert('No graph generated yet.');
             console.warn('No graph generated yet.');
             return;
         }
-        const svgOutput = createGraphSVG(graphData);
 
-        document.getElementById('graph-output').innerHTML = svgOutput;
+        const svgSize = document.getElementById('graph-size-svg')?.value || 'medium';
+        const svgOutput = createGraphSVG(graphData, svgSize);
+
+        const blob = new Blob([svgOutput], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'graph.svg';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     },
 
     init() {

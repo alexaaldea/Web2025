@@ -1,10 +1,17 @@
-export function createGraphSVG(graphData) {
+export function createGraphSVG(graphData, svgSize = 'medium') {
+    let width = 500, height = 500, nodeRadius = 10;
+    if (svgSize === 'small') {
+        width = height = 300;
+        nodeRadius = 7;
+    } else if (svgSize === 'large') {
+        width = height = 800;
+        nodeRadius = 16;
+    }
+
     function svgFromMatrix(matrix) {
         const n = matrix.length;
-        const width = 500, height = 500;
         const centerX = width / 2, centerY = height / 2;
         const layoutRadius = Math.min(width, height) / 2 - 50;
-        const nodeRadius = 10;
         const positions = [];
         for (let i = 0; i < n; i++) {
             const angle = (2 * Math.PI * i) / n;
@@ -16,6 +23,16 @@ export function createGraphSVG(graphData) {
 
         const directed = window.currentGraphOriented === true;
         const markerDef = directed ? 'marker-end="url(#arrow)"' : '';
+        let allWeightsOne = true;
+        for (let i = 0; i < n; i++) {
+            for (let j = 0; j < n; j++) {
+                if (matrix[i][j] !== 0 && matrix[i][j] !== 1) {
+                    allWeightsOne = false;
+                    break;
+                }
+            }
+            if (!allWeightsOne) break;
+        }
 
         let edgesSVG = '';
         for (let i = 0; i < n; i++) {
@@ -27,7 +44,9 @@ export function createGraphSVG(graphData) {
                     const midX = (from.x + to.x) / 2;
                     const midY = (from.y + to.y) / 2;
                     edgesSVG += `<line x1="${from.x}" y1="${from.y}" x2="${to.x}" y2="${to.y}" stroke="black" stroke-width="1" ${markerDef}/>`;
-                    edgesSVG += `<text x="${midX}" y="${midY - 5}" font-size="10" fill="red" text-anchor="middle">${weight}</text>`;
+                    if (!allWeightsOne) {
+                        edgesSVG += `<text x="${midX}" y="${midY - 5}" font-size="10" fill="red" text-anchor="middle">${weight}</text>`;
+                    }
                 }
             }
         }
@@ -68,11 +87,12 @@ ${nodesSVG}
                 return { from, to, weight: w || 1 };
             });
 
+            // Check if all weights are 1
+            const allWeightsOne = edges.every(edge => edge.weight === 1);
+
             const n = Math.max(...edges.flatMap(e => [e.from, e.to]));
-            const width = 500, height = 500;
             const centerX = width / 2, centerY = height / 2;
             const layoutRadius = Math.min(width, height) / 2 - 50;
-            const nodeRadius = 10;
             const positions = [];
             for (let i = 0; i < n; i++) {
                 const angle = (2 * Math.PI * i) / n;
@@ -92,7 +112,9 @@ ${nodesSVG}
                 const midX = (fromPos.x + toPos.x) / 2;
                 const midY = (fromPos.y + toPos.y) / 2;
                 edgesSVG += `<line x1="${fromPos.x}" y1="${fromPos.y}" x2="${toPos.x}" y2="${toPos.y}" stroke="black" stroke-width="1" ${markerDef}/>`;
-                edgesSVG += `<text x="${midX}" y="${midY - 5}" font-size="10" fill="red" text-anchor="middle">${edge.weight}</text>`;
+                if (!allWeightsOne) {
+                    edgesSVG += `<text x="${midX}" y="${midY - 5}" font-size="10" fill="red" text-anchor="middle">${edge.weight}</text>`;
+                }
             }
 
             let nodesSVG = '';

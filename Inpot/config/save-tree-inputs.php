@@ -64,17 +64,17 @@ function toBoolOrNull($value) {
 $stmt = $pdo->prepare("INSERT INTO tree_generator_inputs (
     user_id, tree_nodes, tree_binary, tree_lvl, tree_weighted, tree_min_weight, tree_max_weight, created_at
 ) VALUES (
-    :user_id, :tree_nodes, :tree_binary, :tree_lvl, :tree_weighted, :tree_min_weight, :tree_max_weigh,t now()
+    :user_id, :tree_nodes, :tree_binary, :tree_lvl, :tree_weighted, :tree_min_weight, :tree_max_weight, now()
 )");
 
 try {
     $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
     $stmt->bindValue(':tree_nodes', $data['nodes'], PDO::PARAM_INT);
     $stmt->bindValue(':tree_binary', toBoolOrNull($data['binary']), is_null(toBoolOrNull($data['binary'])) ? PDO::PARAM_NULL : PDO::PARAM_BOOL);
-    $stmt->bindValue(':tree_lvl', $data['lvl'], PDO::PARAM_INT);
+    $stmt->bindValue(':tree_lvl', $data['levels'], PDO::PARAM_INT);
     $stmt->bindValue(':tree_weighted', toBoolOrNull($data['weighted']), is_null(toBoolOrNull($data['weighted'])) ? PDO::PARAM_NULL : PDO::PARAM_BOOL);
-    $stmt->bindValue(':tree_min_weight', $data['minWeight']);
-    $stmt->bindValue(':tree_max_weight', $data['maxWeight']);
+    $stmt->bindValue(':tree_min_weight', $data['min_weight']);
+    $stmt->bindValue(':tree_max_weight', $data['max_weight']);
 
     $stmt->execute();
 
