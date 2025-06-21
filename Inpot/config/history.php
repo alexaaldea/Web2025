@@ -122,6 +122,38 @@ foreach ($matrixRows as $row) {
     ];
 }
 
+$graphRows = fetchAll($pdo, "SELECT id, created_at, graph_nodes, graph_edges, graph_oriented, graph_connected, graph_bipartit, graph_weighted, graph_min_weight, graph_max_weight FROM graph_generator_inputs WHERE user_id = :user_id", ['user_id' => $user_id]);
+foreach ($graphRows as $row) {
+    $data['graph'][] = [
+        'id' => $row['id'],
+        'created_at' => $row['created_at'],
+        'input' => json_encode([
+            'nodes'      => (int)$row['graph_nodes'],
+            'edges'      => (int)$row['graph_edges'],
+            'oriented'   => (bool)$row['graph_oriented'],
+            'connected'  => (bool)$row['graph_connected'],
+            'bipartit'   => (bool)$row['graph_bipartit'],
+            'weighted'   => (bool)$row['graph_weighted'],
+            'min_weight' => isset($row['graph_min_weight']) ? (int)$row['graph_min_weight'] : null,
+            'max_weight' => isset($row['graph_max_weight']) ? (int)$row['graph_max_weight'] : null
+        ])
+    ];
+}
+$treeRows = fetchAll($pdo, "SELECT id, created_at, tree_nodes, tree_binary, tree_lvl, tree_weighted, tree_min_weight, tree_max_weight FROM tree_generator_inputs WHERE user_id = :user_id", ['user_id' => $user_id]);
+foreach ($treeRows as $row) {
+    $data['tree'][] = [
+        'id' => $row['id'],
+        'created_at' => $row['created_at'],
+        'input' => json_encode([
+            'nodes'      => (int)$row['tree_nodes'],
+            'binary'     => (bool)$row['tree_binary'],
+            'level'      => (int)$row['tree_lvl'],
+            'weighted'   => (bool)$row['tree_weighted'],
+            'min_weight' => isset($row['tree_min_weight']) ? (int)$row['tree_min_weight'] : null,
+            'max_weight' => isset($row['tree_max_weight']) ? (int)$row['tree_max_weight'] : null
+        ])
+    ];
+}
 header('Content-Type: application/json');
 echo json_encode($data);
 exit;
