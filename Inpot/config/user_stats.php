@@ -5,7 +5,7 @@ require_once __DIR__ . '/db.php';
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
-// Get JWT from cookie
+
 $jwt = $_COOKIE['jwt'] ?? '';
 
 if (!$jwt) {
@@ -17,7 +17,7 @@ if (!$jwt) {
 $key = "Aceasta este o cheie ultra secreta";
 
 try {
-    // Decode and verify token
+
     $decoded = JWT::decode($jwt, new Key($key, 'HS256'));
     $email = $decoded->email ?? null;
 
@@ -25,7 +25,6 @@ try {
         throw new Exception('Invalid token payload');
     }
 
-    // Lookup user_id by email
     $stmt = $pdo->prepare("SELECT id FROM users WHERE email = :email LIMIT 1");
     $stmt->execute(['email' => $email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -38,7 +37,6 @@ try {
 
     $user_id = $user['id'];
 
-    // Get stats from view
     $stmt = $pdo->prepare("SELECT * FROM user_input_statistics_view WHERE user_id = :user_id");
     $stmt->execute(['user_id' => $user_id]);
     $stats = $stmt->fetch(PDO::FETCH_ASSOC);

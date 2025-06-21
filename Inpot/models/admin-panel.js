@@ -48,7 +48,7 @@ window.adminPanel = {
         })
         .then(res => {
             if (!res.ok) throw new Error('Failed to delete user');
-            adminPanel.loadUsers(); // refresh user list
+            adminPanel.loadUsers();
         })
         .catch(err => {
             alert('Error deleting user: ' + err.message);
