@@ -54,7 +54,7 @@ if ($emailToDelete === $email) {
     echo json_encode(['error' => 'You cannot delete yourself']);
     exit;
 }
-
+error_log("Attempting to delete user: $emailToDelete");
 $stmt = $pdo->prepare('DELETE FROM users WHERE email = :email');
 $stmt->execute(['email' => $emailToDelete]);
 
