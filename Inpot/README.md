@@ -86,6 +86,10 @@ Maybe you can mention me or this repo in the acknowledgements too
   <br />
   <img src="resources/images/admin-main-inpot.png" alt="Screenshot 1" width="600" />
   <br />
+  <img src="resources/images/level1.svg" alt="Screenshot 6" width="600" />
+  <br />
+  <img src="resources/images/level2.svg" alt="Screenshot 7" width="600" />
+  <br />
   <img src="resources/images/level3.png" alt="Screenshot 4" width="600" />
   <br />
   <img src="resources/images/level4.png" alt="Screenshot 5" width="600" />
