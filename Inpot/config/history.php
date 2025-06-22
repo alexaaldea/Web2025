@@ -74,8 +74,7 @@ foreach ($numberRows as $row) {
     ];
 }
 
-
-$stringRows = fetchAll($pdo, "SELECT id, created_at, string_min, string_max, include_prefix, string_count, string_unique FROM string_generator_inputs WHERE user_id = :user_id", ['user_id' => $user_id]);
+$stringRows = fetchAll($pdo, "SELECT id, created_at, string_min, string_max, include_prefix, string_count, string_unique, string_letter FROM string_generator_inputs WHERE user_id = :user_id", ['user_id' => $user_id]);
 foreach ($stringRows as $row) {
     $data['string'][] = [
         'id' => $row['id'],
@@ -85,10 +84,12 @@ foreach ($stringRows as $row) {
             'maxLength' => (int)$row['string_max'],
             'count' => (int)$row['string_count'],
             'prefix' => $row['include_prefix'],
-            'unique' => (bool)$row['string_unique']
+            'unique' => (bool)$row['string_unique'],
+            'letters' => $row['string_letter'] // <-- add this
         ])
     ];
 }
+
 
 $vectorRows = fetchAll($pdo, "SELECT id, created_at, vector_length, vector_min, vector_max, vector_type, vector_sorted FROM vector_generator_inputs WHERE user_id = :user_id", ['user_id' => $user_id]);
 foreach ($vectorRows as $row) {

@@ -15,3 +15,14 @@ export function parseTextOutputToArray(text) {
     const data = lines.map(line => line.trim().split(/\s+/).map(Number));
     return data.length === 1 ? data[0] : data;
 }
+
+export function parseTextOutputToArrayMatrix(text) {
+    const lines = text.trim().split('\n');
+    const data = lines.map(line =>
+        line.trim().split(',').map(num => {
+            const parsed = Number(num.trim());
+            return isNaN(parsed) ? null : parsed;
+        })
+    );
+    return data.length === 1 ? data[0] : data;
+}

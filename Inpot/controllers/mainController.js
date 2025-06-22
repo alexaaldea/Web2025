@@ -5,9 +5,9 @@ import { stringModel } from '../models/stringModel.js';
 import { treeModel } from '../models/treeModel.js';
 import { graphModel } from '../models/graphModel.js';
 import { createGraphSVG } from '../models/create_svg.js';
-import { createTreeSVG } from '../models/create_tree_svg.js'; // Make sure this import is present
-import { exportAsJson, parseTextOutputToArray } from '../utils/exportUtils.js';
-import { exportAsCsv } from '../utils/exportCSV.js';
+import { createTreeSVG } from '../models/create_tree_svg.js';
+import { exportAsJson, parseTextOutputToArray, parseTextOutputToArrayMatrix } from '../utils/exportUtils.js';
+import { exportAsCsv, exportAsCsv2 } from '../utils/exportCSV.js';
 
 
 export const mainController = {
@@ -405,7 +405,7 @@ export const mainController = {
 
     exportMatrixAsJson() {
         const outputText = document.getElementById('matrix-output').textContent;
-        const data = parseTextOutputToArray(outputText);
+        const data = parseTextOutputToArrayMatrix(outputText);
         exportAsJson(data, 'matrix_output.json');
     },
 
@@ -441,7 +441,7 @@ export const mainController = {
 
     exportMatrixAsCsv() {
         const outputText = document.getElementById('matrix-output').textContent;
-        const data = parseTextOutputToArray(outputText);
+        const data = parseTextOutputToArrayMatrix(outputText);
         exportAsCsv(data, 'matrix_output.csv');
     },
 
@@ -456,7 +456,6 @@ export const mainController = {
         const lines = outputText.trim().split('\n');
         exportAsCsv(lines, 'string_output.csv');
     },
-
     exportGraphAsCsv() {
         const outputText = document.getElementById('graph-output').textContent;
         const items = outputText.trim().split(/\s+/);
@@ -579,6 +578,8 @@ export const mainController = {
 
     generateFromHistory: function (sectionType, inputString) {
         const params = JSON.parse(inputString);
+        console.log("TREE PARAMS:", params);
+
 
         switch (sectionType) {
             case 'number':
@@ -589,12 +590,67 @@ export const mainController = {
                     params.includeZero, params.includeMin, params.includeMax,
                     params.edgeEmpty, params.edgeSingle, params.edgeAllEqual, params.step
                 );
-            case 'string':
+            case 'string': {
+                const rawParams = JSON.parse(inputString);
+                console.log("Parsed inputString:", rawParams);
+
+                const minLength = parseInt(rawParams.minLength, 10);
+                const maxLength = parseInt(rawParams.maxLength, 10);
+                const count = parseInt(rawParams.count, 10);
+
+                const unique =
+                    rawParams.unique === true ||
+                        rawParams.unique === "true" ||
+                        rawParams.unique === 1 ||
+                        rawParams.unique === "1"
+                        ? "yes"
+                        : "no";
+
+
+                const letters = rawParams.letters ? rawParams.letters.split(',').join('') : undefined;
+
+
+                const sameLength =
+                    rawParams.sameLength === true ||
+                        rawParams.sameLength === "true" ||
+                        rawParams.sameLength === 1 ||
+                        rawParams.sameLength === "1"
+                        ? minLength
+                        : false;
+
+                const prefix = rawParams.prefix || "";
+                const suffix = rawParams.suffix || "";
+                const sorting = rawParams.sorting || "none";
+
+                const params = {
+                    minLength,
+                    maxLength,
+                    unique,
+                    letters,
+                    count,
+                    sameLength,
+                    prefix,
+                    suffix,
+                    sorting
+                };
+
+                console.log("String params normalized:", params);
+
                 return stringModel.generateStrings(
-                    params.minLength, params.maxLength, params.unique,
-                    params.letters, params.count, params.sameLength,
-                    params.prefix, params.suffix, params.sorting
+                    params.minLength,
+                    params.maxLength,
+                    params.unique,
+                    params.letters,
+                    params.count,
+                    params.sameLength,
+                    params.prefix,
+                    params.suffix,
+                    params.sorting
                 );
+            }
+
+
+
             case 'vector':
                 return vectorModel.generateVector(
                     params.elem, params.min, params.max, params.parity,
@@ -606,17 +662,66 @@ export const mainController = {
                     params.row, params.col, params.min, params.max,
                     params.parity, params.sign, params.unique, params.map
                 );
-            case 'graph':
+            case 'graph': {
+                const node = parseInt(params.nodes);
+                const edge = parseInt(params.edges);
+                const oriented = params.oriented ? "yes" : "no";
+                let connected = params.connected ? "yes" : "no";
+                const bipartit = params.bipartit ? "yes" : "no";
+                const weighted = params.weighted ? "yes" : "no";
+                const min_weight = parseInt(params.min_weight);
+                const max_weight = parseInt(params.max_weight);
+                const format = params.format || 'edge';
+
+                if (isNaN(node) || isNaN(edge)) {
+                    throw new Error("Invalid node or edge value: must be numbers.");
+                }
+
+                if (connected === "no" && edge > 0) {
+                    connected = "yes";
+                }
+
                 return graphModel.generateGraph(
-                    params.node, params.edge, params.oriented,
-                    params.connected, params.bipartit, params.weighted,
-                    params.min_weight, params.max_weight, params.format
+                    node,
+                    edge,
+                    oriented,
+                    connected,
+                    bipartit,
+                    weighted,
+                    min_weight,
+                    max_weight,
+                    format
                 );
-            case 'tree':
+            }
+
+
+            case 'tree': {
+                console.log("TREE PARAMS:", params);
+                const node = parseInt(params.nodes);
+                const levels = parseInt(params.level);
+                const binary = params.binary ? "yes" : "no";
+                const weighted = params.weighted ? "yes" : "no";
+                const min_weight = parseInt(params.min_weight);
+                const max_weight = parseInt(params.max_weight);
+                const format = params.format || 'edge';
+
+                if (isNaN(node) || isNaN(levels)) {
+                    throw new Error("Invalid node or level value: must be numbers.");
+                }
+
                 return treeModel.generateTree(
-                    params.node, params.binary, params.levels,
-                    params.weighted, params.min_weight, params.max_weight, params.format
+                    node,
+                    binary,
+                    levels,
+                    weighted,
+                    min_weight,
+                    max_weight,
+                    format
                 );
+            }
+
+
+
             default:
                 return null;
         }
@@ -680,14 +785,56 @@ export const mainController = {
                 const type = sectionTitle.toLowerCase().split(' ')[0];
 
                 row.querySelector('.export-json-btn').addEventListener('click', () => {
+                    console.log(`Export JSON clicked for type: ${type}`);
+
                     const generated = mainController.generateFromHistory(type, entry.input);
-                    exportAsJson(generated, `${type}_${entry.id}.json`);
+                    console.log("Generated result from history:", generated);
+
+                    if (!generated || (Array.isArray(generated) && generated.length === 0)) {
+                        alert("Nothing to export — generation returned empty or null.");
+                        return;
+                    }
+
+                    if (type === 'tree') {
+                        const outputLines = Array.isArray(generated)
+                            ? generated.map(line =>
+                                Array.isArray(line) ? line.join(',') : line.split(' ').join(',')
+                            )
+                            : typeof generated === 'string'
+                                ? generated.split('\n')
+                                : [String(generated)];
+
+                        console.log("Formatted tree output lines:", outputLines);
+                        exportAsJson(outputLines, `${type}_${entry.id}.json`);
+                    } else {
+                        exportAsJson(generated, `${type}_${entry.id}.json`);
+                    }
                 });
 
+
                 row.querySelector('.export-csv-btn').addEventListener('click', () => {
-                    const generated = mainController.generateFromHistory(type, entry.input);
-                    exportAsCsv(generated, `${type}_${entry.id}.csv`);
+                    let generated = mainController.generateFromHistory(type, entry.input);
+
+                    if (!generated || (Array.isArray(generated) && generated.length === 0)) {
+                        alert("Nothing to export — generation returned empty or null.");
+                        return;
+                    }
+
+                    if (Array.isArray(generated) && typeof generated[0] === 'object' && generated[0] !== null) {
+                        generated = generated.map(edge => {
+                            if ('weight' in edge) {
+                                return [edge.parent, edge.child, edge.weight];
+                            }
+                            return [edge.parent, edge.child];
+                        });
+                    }
+                    else if (Array.isArray(generated) && typeof generated[0] === 'string') {
+                        generated = generated.map(line => line.split(' '));
+                    }
+
+                    exportAsCsv2(generated, `${type}_${entry.id}.csv`);
                 });
+
 
                 tbody.appendChild(row);
             });
@@ -897,9 +1044,9 @@ export const mainController = {
             return;
         }
         if (window.currentGraphnode > 10) {
-        alert('SVG export is only available for trees with 10 nodes or fewer.');
-        return;
-    }
+            alert('SVG export is only available for trees with 10 nodes or fewer.');
+            return;
+        }
         const svgSize = document.getElementById('graph-size-svg')?.value || 'medium';
         const svgOutput = createGraphSVG(graphData, svgSize);
 
