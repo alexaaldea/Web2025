@@ -30,7 +30,7 @@ export const treeModel = {
             return Math.floor(Math.random() * (max_weight - min_weight + 1)) + min_weight;
         }
 
-      
+      //imi fac lungimea
         let lastNode = 1;
         let used = new Set([1]);
         for (let l = 1; l < levels; l++) {
@@ -65,12 +65,13 @@ export const treeModel = {
             let newLevel = parentObj.level + 1;
             parentObj.children = parentObj.children + 1;
 
-            if (binary == "yes" && parentObj.children >= 2) {
+            if (binary == "yes" && parentObj.children == 2) {
                 available.splice(idx, 1);
             } else if (parentObj.level == levels - 1) {
                 available.splice(idx, 1);
+                
             }
-
+            //daca nu e ultimul lvl il adaug in available sa fie parinte
             if (newLevel < levels) {
                 available.push({ id: newNode, level: newLevel, children: 0 });
             }

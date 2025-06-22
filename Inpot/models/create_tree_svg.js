@@ -56,6 +56,7 @@ export function createTreeSVG(edgeOrParent, svgSize = 'medium') {
     const childSet = new Set(edges.map(e => e.child));
     const root = allNodes.find(n => !childSet.has(n)) || 1;
 
+    //bfs
     const positions = {};
     const levels = {};
     let maxLevel = 0;

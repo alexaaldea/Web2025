@@ -143,7 +143,5 @@ ${nodesSVG}
             );
             return svgFromMatrix(matrix);
         }
-    } else {
-        return svgFromMatrix(graphData);
     }
 }

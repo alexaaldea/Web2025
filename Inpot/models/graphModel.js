@@ -80,7 +80,7 @@ export const graphModel = {
             [possibleEdges[i], possibleEdges[j]] = [possibleEdges[j], possibleEdges[i]];
         }
         
-        const numEdges = Math.min(edge, possibleEdges.length);
+        const numEdges = edge;
         
         for (let k = 0; k < numEdges; k++) {
             const [i, j] = possibleEdges[k];
