@@ -27,7 +27,7 @@ export function createTreeSVG(edgeOrParent, svgSize = 'medium') {
     }
 
 
-    let width = 500, height = 500, nodeRadius = 14, levelGap = 80;
+    let width = 500, height = 500, nodeRadius = 14, levelGap = 60;
     if (svgSize === 'small') {
         width = height = 300;
         nodeRadius = 9;
@@ -75,10 +75,11 @@ export function createTreeSVG(edgeOrParent, svgSize = 'medium') {
     for (let l = 0; l <= maxLevel; l++) {
         const nodesAtLevel = levels[l];
         const y = (l + 1) * levelGap;
-        const gap = width / (nodesAtLevel.length + 1);
+        const margin = 20;
+        const gap = (width - 2 * margin) / (nodesAtLevel.length + 1);
         nodesAtLevel.forEach((id, idx) => {
             positions[id] = {
-                x: gap * (idx + 1),
+                x: margin + gap * (idx + 1),
                 y
             };
         });

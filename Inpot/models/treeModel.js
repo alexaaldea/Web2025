@@ -47,9 +47,6 @@ export const treeModel = {
             lastNode = newNode;
             used.add(newNode);
         }
-
-        available = available.filter(n => n.id === lastNode);
-
        
         for (let newNode = levels + 1; newNode <= node; newNode++) {
             if (available.length == 0) {
@@ -68,9 +65,9 @@ export const treeModel = {
             let newLevel = parentObj.level + 1;
             parentObj.children = parentObj.children + 1;
 
-            if (parentObj.level == levels - 1) {
+            if (binary == "yes" && parentObj.children >= 2) {
                 available.splice(idx, 1);
-            } else if (binary == "yes" && parentObj.children >= 2) {
+            } else if (parentObj.level == levels - 1) {
                 available.splice(idx, 1);
             }
 
