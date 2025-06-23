@@ -59,55 +59,87 @@ $data = [
     'tree' => []
 ];
 
-$numberRows = fetchAll($pdo, "SELECT id, created_at, min_value, max_value, count, parity, unique_numbers FROM number_generator_inputs WHERE user_id = :user_id", ['user_id' => $user_id]);
+$numberRows = fetchAll($pdo, "
+    SELECT id, user_id, min_value, max_value, count, parity, sign, sorted, data_type, 
+           unique_numbers, pattern, step, include_zero, include_min, include_max, 
+           edge_empty_input, edge_single_element, edge_all_equal, created_at
+    FROM number_generator_inputs
+    WHERE user_id = :user_id
+", ['user_id' => $user_id]);
 foreach ($numberRows as $row) {
     $data['number'][] = [
-        'id' => $row['id'],
-        'created_at' => $row['created_at'],
-        'input' => json_encode([
-            'min' => (int)$row['min_value'],
-            'max' => (int)$row['max_value'],
-            'count' => (int)$row['count'],
-            'parity' => $row['parity'],
-            'unique' => (bool)$row['unique_numbers']
-        ])
-    ];
+    'id' => $row['id'],
+    'created_at' => $row['created_at'],
+    'input' => json_encode([
+        'min' => (int)$row['min_value'],
+        'max' => (int)$row['max_value'],
+        'count' => (int)$row['count'],
+        'parity' => $row['parity'],
+        'sign' => $row['sign'],
+        'sorted' => $row['sorted'],
+        'unique' => (bool)$row['unique_numbers'],
+        'type' => $row['data_type'],
+        'pattern' => $row['pattern'],
+        'includeZero' => (bool)$row['include_zero'],
+        'includeMin' => (bool)$row['include_min'],
+        'includeMax' => (bool)$row['include_max'],
+        'edgeEmpty' => (bool)$row['edge_empty_input'],
+        'edgeSingle' => (bool)$row['edge_single_element'],
+        'edgeAllEqual' => (bool)$row['edge_all_equal'],
+        'step' => isset($row['step']) ? (int)$row['step'] : null
+    ])
+];
+
 }
 
-$stringRows = fetchAll($pdo, "SELECT id, created_at, string_min, string_max, include_prefix, string_count, string_unique, string_letter FROM string_generator_inputs WHERE user_id = :user_id", ['user_id' => $user_id]);
+$stringRows = fetchAll($pdo, "
+    SELECT id, user_id, string_min, string_max, same_length, include_prefix, 
+           include_suffix, sorting, string_unique, string_letter, string_count, created_at
+    FROM string_generator_inputs
+    WHERE user_id = :user_id
+", ['user_id' => $user_id]);
 foreach ($stringRows as $row) {
     $data['string'][] = [
-        'id' => $row['id'],
-        'created_at' => $row['created_at'],
-        'input' => json_encode([
-            'minLength' => (int)$row['string_min'],
-            'maxLength' => (int)$row['string_max'],
-            'count' => (int)$row['string_count'],
-            'prefix' => $row['include_prefix'],
-            'unique' => (bool)$row['string_unique'],
-            'letters' => $row['string_letter'] // <-- add this
-        ])
-    ];
+    'id' => $row['id'],
+    'created_at' => $row['created_at'],
+    'input' => json_encode([
+        'minLength' => (int)$row['string_min'],
+        'maxLength' => (int)$row['string_max'],
+        'count' => (int)$row['string_count'],
+        'prefix' => $row['include_prefix'],
+        'suffix' => $row['include_suffix'],
+        'unique' => (bool)$row['string_unique'],
+        'letters' => $row['string_letter'],
+        'sameLength' => (bool)$row['same_length'],
+        'sorting' => $row['sorting']
+    ])
+];
+
 }
 
 
-$vectorRows = fetchAll($pdo, "SELECT id, created_at, vector_length, vector_min, vector_max, vector_type, vector_sorted FROM vector_generator_inputs WHERE user_id = :user_id", ['user_id' => $user_id]);
+$vectorRows = fetchAll($pdo, "SELECT id, created_at, vector_length, vector_min, vector_max, vector_parity, vector_sign, vector_type, vector_unique, vector_palindrome, vector_line, vector_sorted FROM vector_generator_inputs WHERE user_id = :user_id", ['user_id' => $user_id]);
+
 foreach ($vectorRows as $row) {
     $data['vector'][] = [
         'id' => $row['id'],
         'created_at' => $row['created_at'],
         'input' => json_encode([
             'elem' => (int)$row['vector_length'],
-            'min' => (int)$row['vector_min'],
-            'max' => (int)$row['vector_max'],
+            'min' => (float)$row['vector_min'],
+            'max' => (float)$row['vector_max'],
+            'parity' => $row['vector_parity'],
+            'sign' => $row['vector_sign'],
+            'sorted' => $row['vector_sorted'],
+            'unique' => (bool)$row['vector_unique'],
             'type' => $row['vector_type'],
-            'sorted' => (bool)$row['vector_sorted']
+            'palindrome' => (bool)$row['vector_palindrome'],
+            'line' => (int)$row['vector_line']
         ])
     ];
 }
 
-
-$matrixRows = fetchAll($pdo, "SELECT id, created_at, matrix_rows, matrix_cols, matrix_min, matrix_max, matrix_parity, matrix_unique FROM matrix_generator_inputs WHERE user_id = :user_id", ['user_id' => $user_id]);
+$matrixRows = fetchAll($pdo, "SELECT id, created_at, matrix_rows, matrix_cols, matrix_min, matrix_max, matrix_parity, matrix_sign, matrix_unique, matrix_map FROM matrix_generator_inputs WHERE user_id = :user_id", ['user_id' => $user_id]);
 foreach ($matrixRows as $row) {
     $data['matrix'][] = [
         'id' => $row['id'],
@@ -115,13 +147,16 @@ foreach ($matrixRows as $row) {
         'input' => json_encode([
             'row' => (int)$row['matrix_rows'],
             'col' => (int)$row['matrix_cols'],
-            'min' => (int)$row['matrix_min'],
-            'max' => (int)$row['matrix_max'],
+            'min' => (float)$row['matrix_min'],
+            'max' => (float)$row['matrix_max'],
             'parity' => $row['matrix_parity'],
-            'unique' => (bool)$row['matrix_unique']
+            'sign' => $row['matrix_sign'],
+            'unique' => (bool)$row['matrix_unique'],
+            'map' => $row['matrix_map']
         ])
     ];
 }
+
 
 $graphRows = fetchAll($pdo, "SELECT id, created_at, graph_nodes, graph_edges, graph_oriented, graph_connected, graph_bipartit, graph_weighted, graph_min_weight, graph_max_weight FROM graph_generator_inputs WHERE user_id = :user_id", ['user_id' => $user_id]);
 foreach ($graphRows as $row) {
